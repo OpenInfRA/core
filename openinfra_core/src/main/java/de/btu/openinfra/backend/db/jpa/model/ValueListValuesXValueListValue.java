@@ -1,7 +1,14 @@
 package de.btu.openinfra.backend.db.jpa.model;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 /**
@@ -14,8 +21,8 @@ import javax.persistence.*;
 public class ValueListValuesXValueListValue implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private ValueListValuesXValueListValuePK id;
+	@Id
+	private UUID id;
 
 	//bi-directional many-to-one association to ValueListValue
 	@ManyToOne
@@ -35,11 +42,11 @@ public class ValueListValuesXValueListValue implements Serializable {
 	public ValueListValuesXValueListValue() {
 	}
 
-	public ValueListValuesXValueListValuePK getId() {
+	public UUID getId() {
 		return this.id;
 	}
 
-	public void setId(ValueListValuesXValueListValuePK id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
