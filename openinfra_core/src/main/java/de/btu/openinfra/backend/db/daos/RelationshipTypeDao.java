@@ -43,8 +43,9 @@ public class RelationshipTypeDao extends
 	@Override
 	public RelationshipTypePojo mapToPojo(
 			Locale locale,
-			RelationshipType modelObject) {
-		return mapToPojoStatically(locale, modelObject);
+			RelationshipType rt) {
+		return mapToPojoStatically(locale, rt,
+		        new MetaDataDao(currentProjectId, schema));
 	}
 
 	/**
@@ -52,24 +53,37 @@ public class RelationshipTypeDao extends
 	 *
 	 * @param locale the requested language as Java.util locale
 	 * @param rt     the model object
+	 * @param mdDao  the meta data DAO
 	 * @return       the POJO object
 	 */
 	public static RelationshipTypePojo mapToPojoStatically(
 			Locale locale,
-			RelationshipType rt) {
+			RelationshipType rt,
+			MetaDataDao mdDao) {
+	    if (rt != null) {
+    		RelationshipTypePojo pojo = new RelationshipTypePojo();
 
-		RelationshipTypePojo pojo = new RelationshipTypePojo();
-		pojo.setUuid(rt.getId());
-		pojo.setTrid(rt.getXmin());
-		pojo.setRelationshipType(
-				ValueListValueDao.mapToPojoStatically(
-						locale,
-						rt.getValueListValue2()));
-		pojo.setDescription(
-				ValueListValueDao.mapToPojoStatically(
-						locale,
-						rt.getValueListValue1()));
-		return pojo;
+    		// set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(rt.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
+
+    		pojo.setUuid(rt.getId());
+    		pojo.setTrid(rt.getXmin());
+    		pojo.setRelationshipType(
+    				ValueListValueDao.mapToPojoStatically(
+    						locale,
+    						rt.getValueListValue2(),
+    						mdDao));
+    		pojo.setDescription(
+    				ValueListValueDao.mapToPojoStatically(
+    						locale,
+    						rt.getValueListValue1(),
+    						mdDao));
+    		return pojo;
+	    } else {
+	        return null;
+	    }
 	}
 
 	@Override

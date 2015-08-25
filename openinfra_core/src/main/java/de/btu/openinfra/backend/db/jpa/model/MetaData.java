@@ -4,10 +4,15 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.json.simple.JSONObject;
+
+import de.btu.openinfra.backend.db.PostgresJsonConverter;
 
 
 /**
@@ -18,15 +23,26 @@ import javax.persistence.Table;
 @Table(name="meta_data")
 @NamedQueries({
 	@NamedQuery(name="MetaData.findAll", query="SELECT m FROM MetaData m"),
-	@NamedQuery(name="MetaData.count", query="SELECT COUNT(m) FROM MetaData m")
+	@NamedQuery(name="MetaData.count", query="SELECT COUNT(m) FROM MetaData m"),
+	@NamedQuery(
+	        name="MetaData.findByObjectId",
+	        query="SELECT m FROM MetaData m WHERE "
+	                + "m.objectId = :oId"),
+	@NamedQuery(
+	        name="MetaData.findByTableColumn",
+	        query="SELECT m FROM MetaData m WHERE "
+	                + "m.objectId = :oId AND "
+	                + "m.pkColumn = :column AND "
+	                + "m.tableName = :table")
 })
 public class MetaData extends OpenInfraModelObject implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Column(name="object_id")
 	private UUID objectId;
 
-	private String data;
+	@Convert(converter = PostgresJsonConverter.class)
+	private JSONObject data;
 
 	@Column(name="pk_column")
 	private String pkColumn;
@@ -45,11 +61,11 @@ public class MetaData extends OpenInfraModelObject implements Serializable {
 		this.objectId = objectId;
 	}
 
-	public String getData() {
+	public JSONObject getData() {
 		return this.data;
 	}
 
-	public void setData(String data) {
+	public void setData(JSONObject data) {
 		this.data = data;
 	}
 

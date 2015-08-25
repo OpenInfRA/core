@@ -90,7 +90,7 @@ public class MultiplicityResource {
 		UUID id = new MultiplicityDao(
 				projectId,
 				OpenInfraSchemas.valueOf(schema.toUpperCase())).createOrUpdate(
-						pojo);
+						pojo, pojo.getMetaData());
 		return OpenInfraResponseBuilder.postResponse(id);
 	}
 
@@ -119,7 +119,7 @@ public class MultiplicityResource {
 				new MultiplicityDao(
 						projectId,
 						OpenInfraSchemas.PROJECTS).createOrUpdate(pojo,
-						        multiplicityId));
+						        multiplicityId, pojo.getMetaData()));
 	}
 
 }

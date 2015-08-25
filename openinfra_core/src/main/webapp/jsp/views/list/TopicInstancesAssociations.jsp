@@ -70,8 +70,10 @@
 											<c:set var="head" value="true"/>
 											<thead>
 												<tr>
-													<c:set var="settingCount" value="${fn:length(pojo.associatedInstance.topicCharacteristic.settings)}"/>
-													<c:forEach items="${pojo.associatedInstance.topicCharacteristic.settings}" var="setting">
+													<c:set var="settingCount" value="${fn:length(pojo.associatedInstance.topicCharacteristic.metaData)}"/>
+													<c:set var="metaData" value="${pojo.associatedInstance.topicCharacteristic.metaData}"/>
+													<c:set var="columns" value="${metaData.list_view_columns}"/>
+													<c:forEach items="${columns}" var="setting">
 														<th style="width: ${100/settingCount}%">
 														<%
 															pageContext.setAttribute(
@@ -109,7 +111,7 @@
 									<c:forEach items="${it}" var="pojo">
 										<c:if test="${tc == pojo.associatedInstance.topicCharacteristic.descriptions.localizedStrings[0].characterString}">
 											<tr>
-												<c:forEach items="${pojo.associatedInstance.topicCharacteristic.settings}" var="setting">
+												<c:forEach items="${pojo.associatedInstance.topicCharacteristic.metaData}" var="setting">
 													<c:set var="found" value="false"/>
 													<c:forEach items="${pojo.associatedInstance.values}" var="value">
 														<c:if test="${setting == value.attributeTypeId}">

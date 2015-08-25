@@ -4,14 +4,16 @@ import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.json.simple.JSONObject;
+
 @XmlRootElement
 public class MetaDataPojo extends OpenInfraPojo {
-    
+
     private UUID objectId;
     private String tableName;
     private String pkColumn;
-    private String data;
-    
+    private JSONObject data;
+
     public UUID getObjectId() {
         return objectId;
     }
@@ -23,25 +25,25 @@ public class MetaDataPojo extends OpenInfraPojo {
     public String getTableName() {
         return tableName;
     }
-    
+
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
-    
+
     public String getPkColumn() {
         return pkColumn;
     }
-    
+
     public void setPkColumn(String pkColumn) {
         this.pkColumn = pkColumn;
     }
-    
-    public String getData() {
+
+    public JSONObject getData() {
         return data;
     }
-    
-    public void setData(String data) {
+
+    public void setData(JSONObject data) {
         this.data = data;
     }
-    
+
 }

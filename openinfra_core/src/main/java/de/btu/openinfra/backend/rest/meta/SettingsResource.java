@@ -65,7 +65,8 @@ public class SettingsResource {
             @PathParam("settingsId") UUID settingsId,
             SettingsPojo pojo) {
         UUID id = new SettingsDao(
-                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, settingsId);
+                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, settingsId,
+                        null);
         return OpenInfraResponseBuilder.putResponse(id);
     }
 

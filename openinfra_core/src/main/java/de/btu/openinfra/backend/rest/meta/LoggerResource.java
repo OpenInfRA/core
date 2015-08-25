@@ -62,7 +62,8 @@ public class LoggerResource {
             @PathParam("loggerId") UUID loggerId,
             LoggerPojo pojo) {
         UUID id = new LoggerDao(
-                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, loggerId);
+                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, loggerId,
+                        null);
         return OpenInfraResponseBuilder.putResponse(id);
     }
 

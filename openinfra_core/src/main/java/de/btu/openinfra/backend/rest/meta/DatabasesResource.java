@@ -64,7 +64,8 @@ public class DatabasesResource {
             @PathParam("databasesId") UUID databasesId,
             DatabasesPojo pojo) {
         UUID id = new DatabasesDao(
-                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, databasesId);
+                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, databasesId,
+                        null);
         return OpenInfraResponseBuilder.putResponse(id);
     }
 

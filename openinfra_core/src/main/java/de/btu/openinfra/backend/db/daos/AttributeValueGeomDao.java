@@ -88,23 +88,29 @@ public class AttributeValueGeomDao
         Query qGeom = em.createNativeQuery(queryString);
         qGeom.setParameter(1, avg.getId());
 
-        AttributeValueGeomPojo avgPojo =
+        AttributeValueGeomPojo pojo =
                 new AttributeValueGeomPojo();
 
+        MetaDataDao mdDao = new MetaDataDao(currentProjectId, schema);
+        // set meta data if exists
+        try {
+            pojo.setMetaData(mdDao.read(avg.getId()).getData());
+        } catch (NullPointerException npe) { /* do nothing */ }
+
         // set the topic instance id
-        avgPojo.setTopicInstanceId(avg.getTopicInstance().getId());
+        pojo.setTopicInstanceId(avg.getTopicInstance().getId());
         // execute the SQL statement and set the geometry value
-        avgPojo.setGeom(qGeom.getResultList().get(0).toString());
+        pojo.setGeom(qGeom.getResultList().get(0).toString());
         // set the geometry type
-        avgPojo.setGeomType(defaultGeomType);
+        pojo.setGeomType(defaultGeomType);
         // set the attribute type to attribute type id group of the value
-        avgPojo.setAttributeTypeToAttributeTypeGroupId(
+        pojo.setAttributeTypeToAttributeTypeGroupId(
                 avg.getAttributeTypeToAttributeTypeGroup().getId());
         // set the id of the object
-        avgPojo.setUuid(avg.getId());
-        avgPojo.setTrid(avg.getXmin());
+        pojo.setUuid(avg.getId());
+        pojo.setTrid(avg.getXmin());
 
-        return avgPojo;
+        return pojo;
 	}
 
 	@Override

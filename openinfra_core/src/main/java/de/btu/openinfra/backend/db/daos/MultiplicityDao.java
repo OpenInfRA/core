@@ -32,19 +32,28 @@ public class MultiplicityDao extends
 
 	@Override
 	public MultiplicityPojo mapToPojo(Locale locale, Multiplicity mp) {
-		return mapToPojoStatically(mp);
+		return mapToPojoStatically(mp,
+		        new MetaDataDao(currentProjectId, schema));
 	}
 
 	/**
 	 * This is a static representation of the mapToPojo method and maps a JPA
 	 * model object into the referring POJO object.
 	 *
-	 * @param mp the JPA model object
-	 * @return   the referring PJO object
+	 * @param mp    the JPA model object
+	 * @param mdDao the meta data DAO
+	 * @return      the POJO object when the model object is not null else null
 	 */
-	public static MultiplicityPojo mapToPojoStatically(Multiplicity mp) {
+	public static MultiplicityPojo mapToPojoStatically(Multiplicity mp,
+	        MetaDataDao mdDao) {
 		if(mp != null) {
 			MultiplicityPojo pojo = new MultiplicityPojo();
+
+			// set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(mp.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
+
 			// Obviously, the maximum value can be null
 			if(mp.getMaxValue() != null) {
 				pojo.setMax(mp.getMaxValue());

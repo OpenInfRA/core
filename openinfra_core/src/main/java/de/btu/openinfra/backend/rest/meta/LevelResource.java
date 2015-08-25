@@ -60,7 +60,7 @@ public class LevelResource {
     @Path("{levelId}")
     public Response update(@PathParam("levelId") UUID levelId, LevelPojo pojo) {
         UUID id = new LevelDao(
-                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, levelId);
+                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, levelId, null);
         return OpenInfraResponseBuilder.putResponse(id);
     }
 

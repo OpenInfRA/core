@@ -150,7 +150,7 @@ public class RelationshipTypeResource {
                     new RelationshipTypeDao(
                             projectId,
                             OpenInfraSchemas.valueOf(schema.toUpperCase()))
-                            .createOrUpdate(pojo));
+                            .createOrUpdate(pojo, pojo.getMetaData()));
     }
 
 	@PUT
@@ -160,11 +160,11 @@ public class RelationshipTypeResource {
 	        @PathParam("projectId") UUID projectId,
 	        @PathParam("schema") String schema,
 	        @PathParam("relationshipTypeId") UUID relationshipTypeId,
-	        RelationshipTypePojo relationshipType) {
+	        RelationshipTypePojo pojo) {
 	    UUID uuid = new RelationshipTypeDao(
                 projectId,
                 OpenInfraSchemas.valueOf(schema.toUpperCase())).createOrUpdate(
-                        relationshipType, relationshipTypeId);
+                        pojo, relationshipTypeId, pojo.getMetaData());
         return OpenInfraResponseBuilder.postResponse(uuid);
 	}
 

@@ -5,13 +5,13 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class AttributeTypeGroupPojo extends OpenInfraPojo {
-	
+public class AttributeTypeGroupPojo extends OpenInfraMetaDataPojo {
+
 	// Fields of the object AttributeTypeGroup
 	private PtFreeTextPojo names;
 	private PtFreeTextPojo descriptions;
 	private UUID subgroupOf;
-	
+
 	public PtFreeTextPojo getNames() {
 		return names;
 	}
@@ -31,7 +31,7 @@ public class AttributeTypeGroupPojo extends OpenInfraPojo {
 	public UUID getSubgroupOf() {
 		return subgroupOf;
 	}
-	
+
 	public void setSubgroupOf(UUID subgroupOf) {
 		this.subgroupOf = subgroupOf;
 	}

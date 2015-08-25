@@ -83,7 +83,7 @@ public class MetaDataResource {
                 new MetaDataDao(
                         projectId,
                         OpenInfraSchemas.valueOf(schema.toUpperCase())
-                        ).createOrUpdate(pojo, metadataId));
+                        ).createOrUpdate(pojo, metadataId, null));
     }
 
     @DELETE

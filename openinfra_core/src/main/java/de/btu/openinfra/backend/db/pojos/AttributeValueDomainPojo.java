@@ -3,8 +3,8 @@ package de.btu.openinfra.backend.db.pojos;
 import java.util.UUID;
 
 
-public class AttributeValueDomainPojo extends OpenInfraPojo {
-	
+public class AttributeValueDomainPojo extends OpenInfraMetaDataPojo {
+
 	private UUID topicInstanceId;
 	private ValueListValuePojo domain;
 	private UUID attributeTypeToAttributeTypeGroupId;
@@ -31,7 +31,7 @@ public class AttributeValueDomainPojo extends OpenInfraPojo {
 
     public void setAttributeTypeToAttributeTypeGroupId(
             UUID attributeTypeToAttributeTypeGroupId) {
-        this.attributeTypeToAttributeTypeGroupId 
+        this.attributeTypeToAttributeTypeGroupId
         = attributeTypeToAttributeTypeGroupId;
     }
 

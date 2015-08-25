@@ -7,7 +7,6 @@ import de.btu.openinfra.backend.db.MappingResult;
 import de.btu.openinfra.backend.db.OpenInfraSchemas;
 import de.btu.openinfra.backend.db.jpa.model.AttributeTypeGroup;
 import de.btu.openinfra.backend.db.jpa.model.AttributeTypeGroupToTopicCharacteristic;
-import de.btu.openinfra.backend.db.jpa.model.MetaData;
 import de.btu.openinfra.backend.db.jpa.model.TopicCharacteristic;
 import de.btu.openinfra.backend.db.pojos.TopicCharacteristicToAttributeTypeGroupPojo;
 
@@ -43,38 +42,53 @@ public class TopicCharacteristicToAttributeTypeGroupDao extends
 	@Override
 	public TopicCharacteristicToAttributeTypeGroupPojo mapToPojo(
 			Locale locale,
-			AttributeTypeGroupToTopicCharacteristic modelObject) {
-
-		if(modelObject != null) {
-			TopicCharacteristicToAttributeTypeGroupPojo pojo =
-					new TopicCharacteristicToAttributeTypeGroupPojo();
-
-			pojo.setUuid(modelObject.getId());
-			pojo.setTrid(modelObject.getXmin());
-			pojo.setTopicCharacteristic(
-	                TopicCharacteristicDao.mapToPojoStatically(
-	                        locale,
-	                        modelObject.getTopicCharacteristic(),
-	                        em.find(
-	                                MetaData.class,
-	                                modelObject.getTopicCharacteristic(
-	                                        ).getId())));
-			pojo.setAttributTypeGroupId(
-				modelObject.getAttributeTypeGroup().getId());
-			pojo.setMultiplicity(MultiplicityDao.mapToPojoStatically(
-					modelObject.getMultiplicityBean()));
-
-			if(modelObject.getOrder() != null) {
-				pojo.setOrder(modelObject.getOrder());
-			}
-
-			return pojo;
-		}
-		else {
-			return null;
-		}
+			AttributeTypeGroupToTopicCharacteristic atgttc) {
+        return mapToPojoStatically(locale, atgttc,
+                new MetaDataDao(currentProjectId, schema));
 	}
 
+	/**
+     * This method implements the method mapToPojo in a static way.
+     *
+     * @param locale the requested language as Java.util locale
+     * @param atgttc the model object
+     * @param mdDao  the meta data DAO
+     * @return       the POJO object when the model object is not null else null
+     */
+    public static TopicCharacteristicToAttributeTypeGroupPojo
+        mapToPojoStatically(
+                Locale locale,
+                AttributeTypeGroupToTopicCharacteristic atgttc,
+                MetaDataDao mdDao) {
+        if (atgttc != null) {
+            TopicCharacteristicToAttributeTypeGroupPojo pojo =
+                    new TopicCharacteristicToAttributeTypeGroupPojo();
+
+            // set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(atgttc.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
+
+            pojo.setUuid(atgttc.getId());
+            pojo.setTrid(atgttc.getXmin());
+            pojo.setTopicCharacteristic(
+                    TopicCharacteristicDao.mapToPojoStatically(
+                            locale,
+                            atgttc.getTopicCharacteristic(), mdDao));
+            pojo.setAttributTypeGroupId(
+                    atgttc.getAttributeTypeGroup().getId());
+            pojo.setMultiplicity(MultiplicityDao.mapToPojoStatically(
+                    atgttc.getMultiplicityBean(), mdDao));
+
+            if(atgttc.getOrder() != null) {
+                pojo.setOrder(atgttc.getOrder());
+            }
+
+            return pojo;
+        } else {
+            return null;
+        }
+    }
 	@Override
 	public MappingResult<AttributeTypeGroupToTopicCharacteristic> mapToModel(
 			TopicCharacteristicToAttributeTypeGroupPojo pojo,

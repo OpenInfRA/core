@@ -7,8 +7,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import de.btu.openinfra.backend.db.daos.AttributeValueGeomType;
 
 @XmlRootElement
-public class AttributeValueGeomPojo extends OpenInfraPojo {
-	
+public class AttributeValueGeomPojo extends OpenInfraMetaDataPojo {
+
 	private UUID topicInstanceId;
 	private String geom;
 	private AttributeValueGeomType geomType;
@@ -37,7 +37,7 @@ public class AttributeValueGeomPojo extends OpenInfraPojo {
 	public void setGeomType(AttributeValueGeomType geomType) {
 		this.geomType = geomType;
 	}
-	
+
 	public UUID getAttributeTypeToAttributeTypeGroupId() {
         return attributeTypeToAttributeTypeGroupId;
     }

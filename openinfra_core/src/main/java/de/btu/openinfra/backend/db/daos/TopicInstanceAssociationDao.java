@@ -43,9 +43,9 @@ public class TopicInstanceAssociationDao extends OpenInfraValueValueDao<
 	}
 
 	/**
-	 * This method returns a list of parents relative to specified topic 
+	 * This method returns a list of parents relative to specified topic
 	 * instance object.
-	 * 
+	 *
 	 * @param locale the given locale
 	 * @param self   the specified topic instance object
 	 * @return       a list of parent topic instances
@@ -71,20 +71,22 @@ public class TopicInstanceAssociationDao extends OpenInfraValueValueDao<
 										parent.getTopicInstance1Bean()),
 								RelationshipTypeDao.mapToPojoStatically(
 										locale,
-										parent.getRelationshipType())));
+										parent.getRelationshipType(),
+										new MetaDataDao(
+										        currentProjectId, schema))));
 				parent = readParent(
 						locale,
 						parent.getTopicInstance1Bean().getId());
 			} else {
 				break;
 			} // end if else
-			
+
 			// ++++++++++ Dirty hack!!! +++++++++
 			// TODO Obviously, there is a bug in the test data. Cycles can occur
 			// and a parent is a child of it's child. This must be discussed.
 			// Workaround: in order to provide the functionality, the loop will
 			// terminate in the third step.
-			
+
 			int count = 0;
 			if(parents.size() > 0) {
 				for(TopicInstanceAssociationPojo help : parents) {
@@ -98,14 +100,14 @@ public class TopicInstanceAssociationDao extends OpenInfraValueValueDao<
 					}
 				}
 			}
-			
+
 			if(count == 4) {
 				System.out.println("Big Problem in "
 						+ "TopicInstanceAssotionationDao --> readParents"
 						+ " This should be discussed and fixed!");
 				break;
 			}
-			
+
 		} // end while
 
 		Collections.reverse(parents);
@@ -133,18 +135,47 @@ public class TopicInstanceAssociationDao extends OpenInfraValueValueDao<
 	public TopicInstanceAssociationPojo mapToPojo(
 			Locale locale,
 			TopicInstanceXTopicInstance txt) {
-		TopicInstanceDao tiDao = new TopicInstanceDao(currentProjectId, schema);
-		TopicInstanceAssociationPojo pojo = new TopicInstanceAssociationPojo();
-		pojo.setUuid(txt.getId());
-		pojo.setTrid(txt.getXmin());
-		pojo.setRelationshipType(
-				RelationshipTypeDao.mapToPojoStatically(
-						locale,
-						txt.getRelationshipType()));
-		pojo.setAssociatedInstance(
-				tiDao.mapToPojo(locale, txt.getTopicInstance2Bean()));
-		return pojo;
+	    return mapToPojoStatically(locale, txt,
+                new MetaDataDao(currentProjectId, schema));
 	}
+
+	/**
+     * This method implements the method mapToPojo in a static way.
+     *
+     * @param locale the requested language as Java.util locale
+     * @param txt    the model object
+     * @param mdDao  the meta data DAO
+     * @return       the POJO object when the model object is not null else null
+     */
+    public static TopicInstanceAssociationPojo mapToPojoStatically(
+            Locale locale,
+            TopicInstanceXTopicInstance txt,
+            MetaDataDao mdDao) {
+        if (txt != null) {
+            TopicInstanceAssociationPojo pojo = new TopicInstanceAssociationPojo();
+
+            // set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(txt.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
+
+            pojo.setUuid(txt.getId());
+            pojo.setTrid(txt.getXmin());
+            pojo.setRelationshipType(
+                    RelationshipTypeDao.mapToPojoStatically(
+                            locale,
+                            txt.getRelationshipType(),
+                            mdDao));
+            pojo.setAssociatedInstance(
+                    TopicInstanceDao.mapToPojoStatically(
+                            locale,
+                            txt.getTopicInstance2Bean(),
+                            mdDao));
+            return pojo;
+        } else {
+            return null;
+        }
+    }
 
 	@Override
 	public MappingResult<TopicInstanceXTopicInstance> mapToModel(

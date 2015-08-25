@@ -4,6 +4,7 @@
 	
 		<!-- Register converter classes -->
 	    <class>de.btu.openinfra.backend.db.PostgresUuidConverter</class>
+	    <class>de.btu.openinfra.backend.db.PostgresJsonConverter</class>
 	    
 	    <!-- Register entity classes -->
 	    <!-- Project databases -->

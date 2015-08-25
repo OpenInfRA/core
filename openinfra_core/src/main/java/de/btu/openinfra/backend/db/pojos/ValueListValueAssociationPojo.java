@@ -3,8 +3,8 @@ package de.btu.openinfra.backend.db.pojos;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ValueListValueAssociationPojo extends OpenInfraPojo {
-	
+public class ValueListValueAssociationPojo extends OpenInfraMetaDataPojo {
+
 	private ValueListValuePojo associatedValueListValue;
 	private ValueListValuePojo relationship;
 
@@ -20,7 +20,7 @@ public class ValueListValueAssociationPojo extends OpenInfraPojo {
 	public ValueListValuePojo getRelationship() {
 		return relationship;
 	}
-	
+
 	public void setRelationship(ValueListValuePojo relationship) {
 		this.relationship = relationship;
 	}

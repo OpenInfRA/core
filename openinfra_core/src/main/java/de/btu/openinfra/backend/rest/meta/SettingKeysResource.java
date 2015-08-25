@@ -64,7 +64,8 @@ public class SettingKeysResource {
             @PathParam("settingKeysId") UUID settingKeysId,
             SettingKeysPojo pojo) {
         UUID id = new SettingKeysDao(
-                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, settingKeysId);
+                OpenInfraSchemas.META_DATA).createOrUpdate(pojo, settingKeysId,
+                        null);
         return OpenInfraResponseBuilder.putResponse(id);
     }
 

@@ -38,8 +38,9 @@ public class ValueListValueAssociationDao
 	@Override
 	public ValueListValueAssociationPojo mapToPojo(
 			Locale locale,
-			ValueListValuesXValueListValue association) {
-		return mapToPojoStatically(locale, association);
+			ValueListValuesXValueListValue vlvxvlv) {
+		return mapToPojoStatically(locale, vlvxvlv,
+		        new MetaDataDao(currentProjectId, schema));
 	}
 
 	@Override
@@ -57,26 +58,33 @@ public class ValueListValueAssociationDao
 	/**
      * This method implements the method mapToPojo in a static way.
      *
-     * @param locale       the requested language as Java.util locale
-     * @param association  the model object
-     * @return             the POJO object when the model object is not null
-     *                     else null
+     * @param locale  the requested language as Java.util locale
+     * @param vlvxvlv the model object
+     * @param mdDao   the meta data DAO
+     * @return        the POJO object when the model object is not null else
+     *                null
      */
 	public static ValueListValueAssociationPojo mapToPojoStatically(
 			Locale locale,
-			ValueListValuesXValueListValue association) {
+			ValueListValuesXValueListValue vlvxvlv,
+			MetaDataDao mdDao) {
 
-		if(association != null) {
+		if(vlvxvlv != null) {
 			ValueListValueAssociationPojo pojo =
 					new ValueListValueAssociationPojo();
 
-			pojo.setUuid(association.getId());
-			pojo.setTrid(association.getXmin());
+			// set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(vlvxvlv.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
+
+			pojo.setUuid(vlvxvlv.getId());
+			pojo.setTrid(vlvxvlv.getXmin());
 			pojo.setRelationship(ValueListValueDao.mapToPojoStatically(locale,
-					association.getValueListValue1()));
+					vlvxvlv.getValueListValue1(), null));
 			pojo.setAssociatedValueListValue(
 					ValueListValueDao.mapToPojoStatically(
-							locale, association.getValueListValue3()));
+							locale, vlvxvlv.getValueListValue3(), null));
 
 			return pojo;
 		}

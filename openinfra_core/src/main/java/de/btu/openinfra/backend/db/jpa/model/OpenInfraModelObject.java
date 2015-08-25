@@ -12,7 +12,7 @@ import javax.persistence.MappedSuperclass;
  * methods, which are equal for all generated subclasses. The database tables
  * of the generated subclasses must have the specified attributes (same name)
  * as columns.
- * 
+ *
  * @author <a href="http://www.b-tu.de">BTU</a> DBIS
  *
  */
@@ -35,6 +35,10 @@ public abstract class OpenInfraModelObject {
 
     public Integer getXmin() {
         return xmin;
+    }
+
+    public void setXmin(Integer xmin) {
+        this.xmin = xmin;
     }
 
 }

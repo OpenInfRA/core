@@ -4,9 +4,11 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.json.simple.JSONObject;
+
 @XmlRootElement
-public class TopicInstancePojo extends OpenInfraPojo {
-	
+public class TopicInstancePojo extends OpenInfraMetaDataPojo {
+
 	/**
 	 * This variable defines the corresponding topic characteristic this topic
 	 * instance belongs to.
@@ -17,7 +19,18 @@ public class TopicInstancePojo extends OpenInfraPojo {
 	 * corresponding topic characteristic.
 	 */
 	private List<AttributeValuePojo> values;
-	
+	private JSONObject metaData;
+
+    @Override
+    public JSONObject getMetaData() {
+        return metaData;
+    }
+
+    @Override
+    public void setMetaData(JSONObject metaData) {
+        this.metaData = metaData;
+    }
+
 	public TopicCharacteristicPojo getTopicCharacteristic() {
 		return topicCharacteristic;
 	}
@@ -29,9 +42,9 @@ public class TopicInstancePojo extends OpenInfraPojo {
 	public List<AttributeValuePojo> getValues() {
 		return values;
 	}
-	
+
 	public void setValues(List<AttributeValuePojo> values) {
 		this.values = values;
 	}
-	
+
 }

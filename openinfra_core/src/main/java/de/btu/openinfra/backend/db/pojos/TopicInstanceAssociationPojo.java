@@ -5,21 +5,21 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class TopicInstanceAssociationPojo extends OpenInfraPojo {
-	
+public class TopicInstanceAssociationPojo extends OpenInfraMetaDataPojo {
+
 	private TopicInstancePojo associatedInstance;
 	private RelationshipTypePojo relationshipType;
-	
+
 	public TopicInstanceAssociationPojo() {}
 	public TopicInstanceAssociationPojo(
 			UUID uuid,
-			TopicInstancePojo tip, 
+			TopicInstancePojo tip,
 			RelationshipTypePojo rtp) {
 		setUuid(uuid);
 		associatedInstance = tip;
 		relationshipType = rtp;
 	}
-	
+
 	public RelationshipTypePojo getRelationshipType() {
 		return relationshipType;
 	}
@@ -31,7 +31,7 @@ public class TopicInstanceAssociationPojo extends OpenInfraPojo {
 	public TopicInstancePojo getAssociatedInstance() {
 		return associatedInstance;
 	}
-	
+
 	public void setAssociatedInstance(TopicInstancePojo associatedInstance) {
 		this.associatedInstance = associatedInstance;
 	}

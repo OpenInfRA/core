@@ -36,8 +36,9 @@ public class AttributeValueValueDao
 	@Override
 	public AttributeValueValuePojo mapToPojo(
 			Locale locale,
-			AttributeValueValue modelObject) {
-		return mapToPojoStatically(locale, modelObject);
+			AttributeValueValue avv) {
+		return mapToPojoStatically(locale, avv,
+		        new MetaDataDao(currentProjectId, schema));
 	}
 
 	/**
@@ -45,27 +46,38 @@ public class AttributeValueValueDao
 	 *
 	 * @param locale the requested language as Java.util locale
 	 * @param avv    the model object
+	 * @param mdDao  the meta data DAO
 	 * @return       the POJO object when the model object is not null else null
 	 */
 	public static AttributeValueValuePojo mapToPojoStatically(
 			Locale locale,
-			AttributeValueValue avv) {
-		AttributeValueValuePojo avvPojo = new AttributeValueValuePojo();
+			AttributeValueValue avv,
+			MetaDataDao mdDao) {
+	    if (avv != null) {
+    		AttributeValueValuePojo pojo = new AttributeValueValuePojo();
 
-		// set the topic instance id
-		avvPojo.setTopicInstanceId(avv.getTopicInstance().getId());
-		// set the value of the object
-		avvPojo.setValue(PtFreeTextDao.mapToPojoStatically(
-				locale,
-				avv.getPtFreeText()));
-		// set the attribute type to attribute type group id of the value
-		avvPojo.setAttributeTypeToAttributeTypeGroupId(
-		        avv.getAttributeTypeToAttributeTypeGroup().getId());
-		// set the id of the object
-		avvPojo.setUuid(avv.getId());
-		avvPojo.setTrid(avv.getXmin());
+    		// set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(avv.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
 
-		return avvPojo;
+    		// set the topic instance id
+    		pojo.setTopicInstanceId(avv.getTopicInstance().getId());
+    		// set the value of the object
+    		pojo.setValue(PtFreeTextDao.mapToPojoStatically(
+    				locale,
+    				avv.getPtFreeText()));
+    		// set the attribute type to attribute type group id of the value
+    		pojo.setAttributeTypeToAttributeTypeGroupId(
+    		        avv.getAttributeTypeToAttributeTypeGroup().getId());
+    		// set the id of the object
+    		pojo.setUuid(avv.getId());
+    		pojo.setTrid(avv.getXmin());
+
+    		return pojo;
+	    } else {
+	        return null;
+	    }
 	}
 
 	@Override

@@ -7,8 +7,11 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
+import javax.persistence.Table;
 
 import org.eclipse.persistence.jpa.JpaQuery;
+import org.json.simple.JSONObject;
 
 import de.btu.openinfra.backend.OpenInfraProperties;
 import de.btu.openinfra.backend.db.EntityManagerFactoryCache;
@@ -16,9 +19,10 @@ import de.btu.openinfra.backend.db.MappingResult;
 import de.btu.openinfra.backend.db.OpenInfraOrderByEnum;
 import de.btu.openinfra.backend.db.OpenInfraSchemas;
 import de.btu.openinfra.backend.db.OpenInfraSortOrder;
+import de.btu.openinfra.backend.db.jpa.model.MetaData;
 import de.btu.openinfra.backend.db.jpa.model.OpenInfraModelObject;
 import de.btu.openinfra.backend.db.jpa.model.PtLocale;
-import de.btu.openinfra.backend.db.jpa.model.TopicCharacteristic;
+import de.btu.openinfra.backend.db.pojos.MetaDataPojo;
 import de.btu.openinfra.backend.db.pojos.OpenInfraPojo;
 
 /**
@@ -174,19 +178,11 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
 		}
 		// 4. Read the required ptlocale object
 		PtLocale ptl = new PtLocaleDao(currentProjectId, schema).read(locale);
-		// 5. Handle topic characteristic objects which belong to the system
-		//    schema separately.
-		// TODO use the language here as well!
-		if(modelClass == TopicCharacteristic.class &&
-		        schema == OpenInfraSchemas.SYSTEM) {
-		    models = em.createNativeQuery(
-		            "select id, description, topic "
-                    + "from topic_characteristic",
-                    TopicCharacteristic.class).getResultList();
-		} else if(column == null) {
-			// 5.a When the column is null redirect to another method
-			return read(locale, offset, size);
-		} else {
+		// 5. Handle requests that contains an order by column
+        if(column == null) {
+            // 5.a When the column is null redirect to another method
+            return read(locale, offset, size);
+        } else {
 	        // 5.a Construct the origin SQL-based named query and replace the
 			//     the placeholder by the required column and sort order.
 	        String sqlString = em.createNamedQuery(
@@ -265,17 +261,74 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
 		} // end try catch
     }
 
+	/**
+	 * This method will first execute a createOrUpdate for the TypePojo and
+	 * second execute a createOrUpdate for the meta data. This is necessary for
+	 * project and system databases where tables can store meta data inside the
+	 * table meta_data.
+	 *
+	 * @param pojo     the POJO object which should be stored in the database
+	 * @param metaData the JSON data that should be stored in the meta data
+	 *                 associated to the POJO
+	 * @return
+	 */
+	public UUID createOrUpdate(TypePojo pojo, JSONObject metaData) {
+
+	    UUID retId = null;
+
+	    if (pojo != null && metaData != null) {
+	        // first createOrUpdate the TypePojo
+	        retId = createOrUpdate(pojo);
+
+	        // only check for meta data in project and system schema
+	        switch (schema) {
+	            case PROJECTS:
+	            case SYSTEM:
+	                // if the TypePojo was created successfully
+	                if (retId != null) {
+	                    // create a raw POJO for meta data
+	                    MetaDataPojo mdPojo = new MetaDataPojo();
+
+	                    // set the object id from the previously created
+	                    // TypePojo
+	                    mdPojo.setObjectId(retId);
+	                    // TODO find a way to avoid hard coded id
+	                    // define the primary key column
+	                    mdPojo.setPkColumn("id");
+	                    // define the table name for the object
+	                    mdPojo.setTableName(modelClass
+	                            .getAnnotation(Table.class).name());
+	                    // set the meta data
+	                    mdPojo.setData(metaData);
+	                    // write the meta data
+	                    UUID metaId = new MetaDataDao(currentProjectId, schema)
+	                                        .createOrUpdate(mdPojo);
+	                    if (metaId == null) {
+	                        // TODO give feedback about meta data creation?
+	                    }
+	                }
+	                break;
+	            default:
+	                break;
+	        }
+	    }
+	    return retId;
+	}
+
     /**
-     * This function checks if the value that is part of the URI matches with
+     * This method checks if the value that is part of the URI matches with
      * the object id in the POJO. If it matches it will call the createOrUpdate
-     * method of the OpenInfraDao. Otherwise it will return null.
+     * method of the OpenInfraDao. Otherwise it will return null. If meta data
+     * is passed it will be created or updated as well.
      *
-     * @param pojo    the POJO object which should be stored in the database
-     * @param valueId the value id from the URI
-     * @return        the UUID of the newly created or replaced object or null
+     * @param pojo     the POJO object which should be stored in the database
+     * @param valueId  the value id from the URI
+     * @param metaData the JSON data that should be stored in the meta data
+     *                 associated to the POJO
+     * @return         the UUID of the newly created or replaced object or null
      * @throws RuntimeException
      */
-    public UUID createOrUpdate(TypePojo pojo, UUID valueId)
+    public UUID createOrUpdate(TypePojo pojo, UUID valueId, JSONObject metaData)
             throws RuntimeException {
 
         // check if the value id of the URI map to the POJO uuid
@@ -284,11 +337,16 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
                 return null;
             }
         } catch (NullPointerException e) { /* do nothing */ }
-        return createOrUpdate(pojo);
+        if (metaData != null) {
+            // update the meta data as well if it exists
+            return createOrUpdate(pojo, metaData);
+        } else {
+            return createOrUpdate(pojo);
+        }
     }
 
     /**
-     * This function checks if the first associated id that is part of the URI
+     * This method checks if the first associated id that is part of the URI
      * matches with the association id in the POJO. If it matches it will call
      * the createOrUpdate method of the OpenInfraDao. Otherwise it will return
      * null.
@@ -297,12 +355,14 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
      *                                    in the database
      * @param firstAssociationId          the first association id from the URI
      * @param firstAssociationIdFromPojo  the first association id from the POJO
+     * @param metaData                    the JSON data that should be stored in
+     *                                    the meta data associated to the POJO
      * @return                            the UUID of the newly created or
      *                                    replaced object or null
      * @throws RuntimeException
      */
     public UUID createOrUpdate(TypePojo pojo, UUID firstAssociationId,
-            UUID firstAssociationIdFromPojo)
+            UUID firstAssociationIdFromPojo, JSONObject metaData)
             throws RuntimeException {
 
         // check if the value id of the URI map to the pojo uuid
@@ -312,11 +372,16 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
             }
         } catch (NullPointerException e) { /* do nothing */ }
 
-        return createOrUpdate(pojo);
+        if (metaData != null) {
+            // update the meta data as well if it exists
+            return createOrUpdate(pojo, metaData);
+        } else {
+            return createOrUpdate(pojo);
+        }
     }
 
     /**
-     * This function checks if the first associated id that is part of the URI
+     * This method checks if the first associated id that is part of the URI
      * matches with the association id in the POJO and the second associated id
      * that is part of the URI matches with the id of the associated object in
      * the POJO. If the matches are fulfilled the createOrUpdate method of the
@@ -329,13 +394,15 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
      * @param secondAssociationId         the second association id from the URI
      * @param secondAssociationIdFromPojo the second association id from the
      *                                    POJO
+     * @param metaData                    the JSON data that should be stored in
+     *                                    the meta data associated to the POJO
      * @return                            the UUID of the newly created or
      *                                    replaced object or null
      * @throws RuntimeException
      */
     public UUID createOrUpdate(TypePojo pojo, UUID firstAssociationId,
             UUID firstAssociationIdFromPojo, UUID secondAssociationId,
-            UUID secondAssociationIdFromPojo)
+            UUID secondAssociationIdFromPojo, JSONObject metaData)
             throws RuntimeException {
 
         // check if the value id of the URI map to the pojo uuid
@@ -351,7 +418,12 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
             }
         } catch (NullPointerException e) { /* do nothing */ }
 
-        return createOrUpdate(pojo);
+        if (metaData != null) {
+            // update the meta data as well if it exists
+            return createOrUpdate(pojo, metaData);
+        } else {
+            return createOrUpdate(pojo);
+        }
     }
 
 	/**
@@ -403,13 +475,35 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
 			TypePojo pojoObject, TypeModel modelObject);
 
 	/**
-	 * This method deletes an entity from the database.
+	 * This method deletes an entity from the database. Previously it checks if
+	 * meta data exists for this entity and delete it as well.
 	 *
 	 * @param uuid the uuid which specifies the entity
 	 * @return     true when the entity was deleted false when the uuid doesn't
 	 *             exists
 	 */
 	public boolean delete(UUID uuid) {
+	    // only check for meta data in project and system schema
+	    switch (schema) {
+            case PROJECTS:
+            case SYSTEM:
+        	    try {
+        	        // retrieve meta data for the entity if exists
+                    MetaData md = em.createNamedQuery(
+                            "MetaData.findByObjectId", MetaData.class)
+                            .setParameter("oId", uuid).getSingleResult();
+                    // delete the meta data
+                    if (new MetaDataDao(currentProjectId, schema).delete(
+                            md.getId())) {
+                        // TODO give feedback about meta data deletion?
+                    }
+                } catch (NoResultException nre) { /* do nothing */ }
+        	    break;
+            default:
+                break;
+        }
+
+	    // delete the common entity
 		TypeModel o = em.find(modelClass, uuid);
 		EntityTransaction et = em.getTransaction();
 		if(o != null) {

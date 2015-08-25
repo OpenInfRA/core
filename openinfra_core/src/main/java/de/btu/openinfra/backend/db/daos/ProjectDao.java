@@ -124,12 +124,28 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
 
 	@Override
 	public ProjectPojo mapToPojo(Locale locale, Project p) {
-		return mapToPojoStatically(locale, p);
+		return mapToPojoStatically(locale, p,
+		        new MetaDataDao(currentProjectId, schema));
 	}
 
-	public static ProjectPojo mapToPojoStatically(Locale locale, Project p) {
+	/**
+     * This method implements the method mapToPojo in a static way.
+     *
+     * @param locale the requested language as Java.util locale
+     * @param p      the model object
+     * @param mdDao  the meta data DAO
+     * @return       the POJO object when the model object is not null else null
+     */
+	public static ProjectPojo mapToPojoStatically(Locale locale, Project p,
+	        MetaDataDao mdDao) {
 		if(p != null) {
 			ProjectPojo pojo = new ProjectPojo();
+
+			// set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(p.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
+
 			Project parent = p.getProject();
 
 			pojo.setNames(PtFreeTextDao.mapToPojoStatically(
@@ -196,11 +212,12 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
 	public List<ProjectPojo> getParents(Locale locale) {
 		Project self = em.find(Project.class, currentProjectId);
 		List<ProjectPojo> parents = new LinkedList<ProjectPojo>();
-		parents.add(mapToPojoStatically(locale, self));
+		MetaDataDao mdDao = new MetaDataDao(currentProjectId, schema);
+		parents.add(mapToPojoStatically(locale, self, mdDao));
 
 		while(self.getProject() != null) {
 			self = self.getProject();
-			parents.add(mapToPojoStatically(locale, self));
+			parents.add(mapToPojoStatically(locale, self, mdDao));
 		} // end while
 		return Lists.reverse(parents);
 	}

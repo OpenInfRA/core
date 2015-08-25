@@ -54,9 +54,11 @@ public class AttributeTypeGroupDao
 		// 2. Map sub groups and return them
 		List<AttributeTypeGroupPojo> pojos =
 				new LinkedList<AttributeTypeGroupPojo>();
+
 		if(atg != null) {
 			for(AttributeTypeGroup g : atg.getAttributeTypeGroups()) {
-				pojos.add(mapToPojoStatically(locale, g));
+				pojos.add(mapToPojoStatically(locale, g,
+				        new MetaDataDao(currentProjectId, schema)));
 			} // end for
 		} // end if
 		return pojos;
@@ -66,7 +68,8 @@ public class AttributeTypeGroupDao
 	public AttributeTypeGroupPojo mapToPojo(
 			Locale locale,
 			AttributeTypeGroup atg) {
-		return mapToPojoStatically(locale, atg);
+		return mapToPojoStatically(locale, atg,
+		        new MetaDataDao(currentProjectId, schema));
 	}
 
 	/**
@@ -74,14 +77,21 @@ public class AttributeTypeGroupDao
 	 *
 	 * @param locale the requested language as Java.util locale
 	 * @param atg    the model object
+	 * @param mdDao  the meta data DAO
 	 * @return       the POJO object when the model object is not null else null
 	 */
 	public static AttributeTypeGroupPojo mapToPojoStatically(
 			Locale locale,
-			AttributeTypeGroup atg) {
-		AttributeTypeGroupPojo pojo = new AttributeTypeGroupPojo();
-
+			AttributeTypeGroup atg,
+			MetaDataDao mdDao) {
 		if(atg != null) {
+		    AttributeTypeGroupPojo pojo = new AttributeTypeGroupPojo();
+
+		    // set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(atg.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
+
 			AttributeTypeGroup subgroupOf = atg.getAttributeTypeGroup();
 			if(subgroupOf != null) {
 				pojo.setSubgroupOf(subgroupOf.getId());

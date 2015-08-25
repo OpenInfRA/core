@@ -20,7 +20,9 @@
 <body>
 	<%@ include file="../../snippets/Menu.jsp" %>
 	
-	<c:set var="columns" value="${it[0].topicCharacteristic.settings}"/>
+	<c:set var="metaData" value="${it[0].topicCharacteristic.metaData}"/>
+	<c:set var="columns" value="${metaData.list_view_columns}"/>
+	
 	<div id="orderAndFilterRow" class="row">
 		<%@ include file="../../snippets/Filter.jsp" %>
 		<%@ include file="../../snippets/OrderBy.jsp" %>
@@ -156,7 +158,7 @@
 					</c:if>
 				</tr>
 			</c:forEach>
-		</table>  
+		</table>
 	</div>
 	
 	<nav>

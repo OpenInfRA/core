@@ -16,20 +16,20 @@ import javax.persistence.Table;
 
 /**
  * The persistent class for the topic_characteristic database table.
- * 
+ *
  */
 @Entity
 @Table(name="topic_characteristic")
 @NamedQueries({
-	@NamedQuery(name="TopicCharacteristic.count", 
+	@NamedQuery(name="TopicCharacteristic.count",
 		query="SELECT COUNT(t) FROM TopicCharacteristic t "),
-	@NamedQuery(name="TopicCharacteristic.findAll",	
+	@NamedQuery(name="TopicCharacteristic.findAll",
 		query="SELECT t "
 				+ "FROM TopicCharacteristic t "),
 	@NamedQuery(name="TopicCharacteristic.findByProject",
 		query="SELECT t FROM TopicCharacteristic t "
 					+ "WHERE t.project = :value "),
-    // This query selects an ordered list of TopicCharacteristics by a like 
+    // This query selects an ordered list of TopicCharacteristics by a like
 	// filter applied on LocalizedCharacterStrings
 	@NamedQuery(name="TopicCharacteristic.findByDescription",
 		query="SELECT t FROM TopicCharacteristic t "
@@ -47,7 +47,7 @@ import javax.persistence.Table;
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name="TopicCharacteristic.findAllByLocaleAndOrder",
-			query="select * "
+			query="select *, xmin "
 					+ "from topic_characteristic as tc "
 					+ "LEFT OUTER JOIN ( "
 						+ "select * "

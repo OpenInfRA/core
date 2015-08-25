@@ -5,12 +5,12 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class AttributeTypeAssociationPojo extends OpenInfraPojo {
+public class AttributeTypeAssociationPojo extends OpenInfraMetaDataPojo {
 
 	private UUID associationAttributeTypeId;
     private AttributeTypePojo associatedAttributeType;
 	private ValueListValuePojo relationship;
-	
+
 	public UUID getAssociationAttributeTypeId() {
         return associationAttributeTypeId;
     }

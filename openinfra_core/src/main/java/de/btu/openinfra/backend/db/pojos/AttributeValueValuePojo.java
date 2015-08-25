@@ -3,7 +3,7 @@ package de.btu.openinfra.backend.db.pojos;
 import java.util.UUID;
 
 
-public class AttributeValueValuePojo extends OpenInfraPojo {
+public class AttributeValueValuePojo extends OpenInfraMetaDataPojo {
 
 	private UUID topicInstanceId;
 	private PtFreeTextPojo value;
@@ -16,7 +16,7 @@ public class AttributeValueValuePojo extends OpenInfraPojo {
 	public void setTopicInstanceId(UUID topicInstanceId) {
 		this.topicInstanceId = topicInstanceId;
 	}
-	
+
 	public PtFreeTextPojo getValue() {
 		return value;
 	}
@@ -24,15 +24,15 @@ public class AttributeValueValuePojo extends OpenInfraPojo {
 	public void setValue(PtFreeTextPojo value) {
 		this.value = value;
 	}
-	
+
     public UUID getAttributeTypeToAttributeTypeGroupId() {
         return attributeTypeToAttributeTypeGroupId;
     }
 
     public void setAttributeTypeToAttributeTypeGroupId(
             UUID attributeTypeToAttributeTypeGroupId) {
-        this.attributeTypeToAttributeTypeGroupId = 
+        this.attributeTypeToAttributeTypeGroupId =
                 attributeTypeToAttributeTypeGroupId;
     }
-	
+
 }

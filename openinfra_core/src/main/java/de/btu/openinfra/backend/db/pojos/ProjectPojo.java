@@ -5,16 +5,16 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ProjectPojo extends OpenInfraPojo {
-	
+public class ProjectPojo extends OpenInfraMetaDataPojo {
+
 	private UUID subprojectOf;
 	private PtFreeTextPojo names;
 	private PtFreeTextPojo descriptions;
-	
+
 	public UUID getSubprojectOf() {
 		return subprojectOf;
 	}
-	
+
 	public void setSubprojectOf(UUID subprojectOf) {
 		this.subprojectOf = subprojectOf;
 	}

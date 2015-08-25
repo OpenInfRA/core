@@ -35,23 +35,39 @@ public class ValueListDao extends OpenInfraDao<ValueListPojo, ValueList> {
 
 	@Override
 	public ValueListPojo mapToPojo(Locale locale, ValueList vl) {
-		return mapToPojoStatically(locale, vl);
+		return mapToPojoStatically(locale, vl,
+		        new MetaDataDao(currentProjectId, schema));
 	}
 
+	/**
+     * This method implements the method mapToPojo in a static way.
+     *
+     * @param locale the requested language as Java.util locale
+     * @param vl     the model object
+     * @param mdDao  the meta data DAO
+     * @return       the POJO object when the model object is not null else null
+     */
 	public static ValueListPojo mapToPojoStatically(
 			Locale locale,
-			ValueList vl) {
+			ValueList vl,
+			MetaDataDao mdDao) {
 		if(vl != null) {
-			ValueListPojo vlPojo = new ValueListPojo();
-			vlPojo.setNames(PtFreeTextDao.mapToPojoStatically(
+		    ValueListPojo pojo = new ValueListPojo();
+
+		 // set meta data if exists
+            try {
+                pojo.setMetaData(mdDao.read(vl.getId()).getData());
+            } catch (NullPointerException npe) { /* do nothing */ }
+
+			pojo.setNames(PtFreeTextDao.mapToPojoStatically(
 					locale,
 					vl.getPtFreeText2()));
-			vlPojo.setDescriptions(PtFreeTextDao.mapToPojoStatically(
+			pojo.setDescriptions(PtFreeTextDao.mapToPojoStatically(
 					locale,
 					vl.getPtFreeText1()));
-			vlPojo.setUuid(vl.getId());
-			vlPojo.setTrid(vl.getXmin());
-			return vlPojo;
+			pojo.setUuid(vl.getId());
+			pojo.setTrid(vl.getXmin());
+			return pojo;
 		} else {
 			return null;
 		} // end if else

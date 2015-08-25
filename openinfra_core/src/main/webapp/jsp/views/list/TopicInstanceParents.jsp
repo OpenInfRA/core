@@ -37,7 +37,7 @@
 			<%@ include file="../../snippets/LocalizedStrings.jsp" %>
 			${pojo.relationshipType.description.names.localizedStrings[0].characterString}
 		</div>
-		<c:set var="settingCount" value="${fn:length(pojo.associatedInstance.topicCharacteristic.settings)}"/>
+		<c:set var="settingCount" value="${fn:length(pojo.associatedInstance.topicCharacteristic.metaData)}"/>
 		<c:if test="${settingCount == 0}">
 			<div class="panel-body">
 	    		<p><fmt:message key="nosettings.label"/></p>
@@ -47,7 +47,9 @@
 			<thead>
 				<tr>
 					<c:set var="columnName" value=""/>
-					<c:forEach items="${pojo.associatedInstance.topicCharacteristic.settings}" var="setting">
+					<c:set var="metaData" value="${pojo.associatedInstance.topicCharacteristic.metaData}"/>
+					<c:set var="columns" value="${metaData.list_view_columns}"/>
+					<c:forEach items="${columns}" var="setting">
 						<th style="width: ${100/settingCount}%">
 						<%
 							pageContext.setAttribute(
@@ -85,7 +87,7 @@
 			</thead>
 
 				<tr>
-					<c:forEach items="${pojo.associatedInstance.topicCharacteristic.settings}" var="setting">
+					<c:forEach items="${pojo.associatedInstance.topicCharacteristic.metaData}" var="setting">
 						<c:set var="found" value="false"/>
 						<c:forEach items="${pojo.associatedInstance.values}" var="value">
 							<c:if test="${setting == value.attributeTypeId}">

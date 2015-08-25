@@ -5,13 +5,14 @@ import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class AttributeTypeGroupToTopicCharacteristicPojo extends OpenInfraPojo {
+public class AttributeTypeGroupToTopicCharacteristicPojo
+                extends OpenInfraMetaDataPojo {
 
 	private AttributeTypeGroupPojo attributeTypeGroup;
 	private UUID topicCharacteristicId;
 	private MultiplicityPojo multiplicity;
 	private int order;
-	
+
 	public AttributeTypeGroupPojo getAttributeTypeGroup() {
 		return attributeTypeGroup;
 	}
@@ -24,25 +25,25 @@ public class AttributeTypeGroupToTopicCharacteristicPojo extends OpenInfraPojo {
 	public UUID getTopicCharacteristicId() {
 		return topicCharacteristicId;
 	}
-	
+
 	public void setTopicCharacteristicId(UUID topicCharacteristicId) {
 		this.topicCharacteristicId = topicCharacteristicId;
 	}
-	
+
 	public MultiplicityPojo getMultiplicity() {
 		return multiplicity;
 	}
-	
+
 	public void setMultiplicity(MultiplicityPojo multiplicity) {
 		this.multiplicity = multiplicity;
 	}
-	
+
 	public int getOrder() {
 		return order;
 	}
-	
+
 	public void setOrder(int order) {
 		this.order = order;
 	}
-	
+
 }

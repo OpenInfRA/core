@@ -108,6 +108,16 @@
 		    <artifactId>jersey-media-json-jackson</artifactId>
 		</dependency>
 		
+		<!-- simple json string to object converter -->
+		<!-- TODO test if it is really necessary to use this lib instead of 
+			 jackson ObjectMapper -->
+		<dependency>
+		    <groupId>com.googlecode.json-simple</groupId>
+    		<artifactId>json-simple</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
+
+
 		<!-- JSP as template engine -->
 		<dependency>
 	    <groupId>org.glassfish.jersey.ext</groupId>

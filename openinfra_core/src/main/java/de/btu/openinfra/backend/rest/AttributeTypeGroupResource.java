@@ -237,7 +237,7 @@ public class AttributeTypeGroupResource {
         UUID id = new AttributeTypeGroupDao(
                 projectId,
                 OpenInfraSchemas.valueOf(schema.toUpperCase())).createOrUpdate(
-                        pojo);
+                        pojo, pojo.getMetaData());
         return OpenInfraResponseBuilder.postResponse(id);
     }
 
@@ -251,7 +251,7 @@ public class AttributeTypeGroupResource {
 	    UUID id = new AttributeTypeGroupDao(
 	            projectId,
 	            OpenInfraSchemas.valueOf(schema.toUpperCase())).createOrUpdate(
-                        pojo, attributeTypeGroupId);
+                        pojo, attributeTypeGroupId, pojo.getMetaData());
 	    return OpenInfraResponseBuilder.putResponse(id);
 	}
 
