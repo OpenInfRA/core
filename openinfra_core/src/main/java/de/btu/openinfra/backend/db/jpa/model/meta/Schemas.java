@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -13,11 +14,14 @@ import de.btu.openinfra.backend.db.jpa.model.OpenInfraModelObject;
 
 /**
  * The persistent class for the schemas database table.
- * 
+ *
  */
 @Entity
 @Table(schema="meta_data")
-@NamedQuery(name="Schemas.findAll", query="SELECT s FROM Schemas s")
+@NamedQueries({
+    @NamedQuery(name="Schemas.findAll", query="SELECT s FROM Schemas s"),
+    @NamedQuery(name="Schemas.count", query="SELECT COUNT(s) FROM Schemas s")
+})
 public class Schemas extends OpenInfraModelObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 

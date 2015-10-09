@@ -537,17 +537,31 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
 	 */
 	protected TypeModel createModelObject(UUID id) {
 		TypeModel tm = null;
+		UUID newId = null;
 		if(id != null) {
+		    // retrieve the object from the database
 			tm = em.find(modelClass, id);
-			// TODO check if tm null
+			// if no object was found for the given UUID
+			if (tm == null) {
+			    // save the UUID as id for the new object
+			    newId = id;
+			} else {
+			    // return the retrieved object
+			    return tm;
+			}
 		} else {
-			try {
-				tm = modelClass.newInstance();
-				tm.setId(UUID.randomUUID());
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			} // end try catch
+		    // create a random UUID if no id was passed
+			newId = UUID.randomUUID();
 		} // end if else
+
+		try {
+		    // create a new object instance
+            tm = modelClass.newInstance();
+            // and set the new id
+            tm.setId(newId);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        } // end try catch
 		return tm;
 	}
 

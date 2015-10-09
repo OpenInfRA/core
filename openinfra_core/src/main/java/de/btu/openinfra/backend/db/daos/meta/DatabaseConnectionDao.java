@@ -31,7 +31,7 @@ public class DatabaseConnectionDao
     @Override
     public DatabaseConnectionPojo mapToPojo(Locale locale,
             DatabaseConnection dc) {
-        return mapPojoStatically(dc);
+        return mapToPojoStatically(dc);
     }
 
     /**
@@ -40,16 +40,16 @@ public class DatabaseConnectionDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static DatabaseConnectionPojo mapPojoStatically(
+    public static DatabaseConnectionPojo mapToPojoStatically(
             DatabaseConnection dc) {
         if (dc != null) {
             DatabaseConnectionPojo pojo = new DatabaseConnectionPojo(dc);
-            pojo.setServer(ServersDao.mapPojoStatically(dc.getServerBean()));
-            pojo.setPort(PortsDao.mapPojoStatically(dc.getPortBean()));
-            pojo.setDatabase(DatabasesDao.mapPojoStatically(
+            pojo.setServer(ServersDao.mapToPojoStatically(dc.getServerBean()));
+            pojo.setPort(PortsDao.mapToPojoStatically(dc.getPortBean()));
+            pojo.setDatabase(DatabasesDao.mapToPojoStatically(
                     dc.getDatabaseBean()));
-            pojo.setSchema(SchemasDao.mapPojoStatically(dc.getSchemaBean()));
-            pojo.setCredentials(CredentialsDao.mapPojoStatically(
+            pojo.setSchema(SchemasDao.mapToPojoStatically(dc.getSchemaBean()));
+            pojo.setCredentials(CredentialsDao.mapToPojoStatically(
                     dc.getCredential()));
             return pojo;
         } else {

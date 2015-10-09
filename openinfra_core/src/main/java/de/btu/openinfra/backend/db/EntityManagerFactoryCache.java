@@ -1,6 +1,5 @@
 package de.btu.openinfra.backend.db;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -24,7 +23,7 @@ import de.btu.openinfra.backend.db.pojos.meta.ProjectsPojo;
 /**
  * This class is a container to cache objects from the class
  * EntityManagerFactory. The class uses the singleton implementation.
- * 
+ *
  * @author <a href="http://www.b-tu.de">BTU</a> DBIS
  *
  */
@@ -35,7 +34,7 @@ public class EntityManagerFactoryCache {
      * Maximum number of entries the cache may contain.
      */
     private static int cacheSize = 100;
-    
+
     // TODO Proposal: Create two static variables for system and meta data
     // entity manager factory. Does not need a cache look up. Only a get
     // method is required.
@@ -44,7 +43,7 @@ public class EntityManagerFactoryCache {
      * (EntityManagerFactory). The cache is thread-safe.
      */
     private static final LoadingCache<CacheTuple, EntityManagerFactory> cache;
-    
+
     /**
      * Creates the initial cache and adds some specific entity manager
      * factories.
@@ -59,7 +58,7 @@ public class EntityManagerFactoryCache {
                         return createNewEntityManagerFactory(tuple);
                     }
                 });
-        
+
         // Add specific entity manager factories.
         // Add system entity manager factory
         if(cacheSize - cache.size() > 0) {
@@ -85,7 +84,7 @@ public class EntityManagerFactoryCache {
         if(cacheSize - cache.size() > 0) {
         	try {
         		cache.get(new CacheTuple(
-        				OpenInfraApplication.PERSISTENCE_CONTEXT, 
+        				OpenInfraApplication.PERSISTENCE_CONTEXT,
         				createProperties(null, OpenInfraSchemas.RBAC)));
         	} catch(ExecutionException ee) {
         		ee.printStackTrace();
@@ -96,7 +95,7 @@ public class EntityManagerFactoryCache {
             ProjectDao projectDao = new ProjectDao(null,
                     OpenInfraSchemas.META_DATA);
             List<ProjectPojo> projects = projectDao.readMainProjects(null);
-          
+
             for(ProjectPojo projectPojo : projects) {
                 try {
                     cache.get(new CacheTuple(
@@ -113,14 +112,14 @@ public class EntityManagerFactoryCache {
             }
         }
     }
-    
+
     /**
      * Returns an entity factory manager for the given parameters.
      * @param currentProjectId identifier of the current project
      * @param schema this parameter defines the schema
      * @return entity factory manager if an entry exists in the cache or it
      * is possible to add an entry in the cache for the given parameters,
-     * otherwise null 
+     * otherwise null
      */
     public static EntityManagerFactory getEntityManagerFactory(
             UUID currentProjectId,
@@ -128,7 +127,7 @@ public class EntityManagerFactoryCache {
         // Create properties
         Map<String, String> properties =
                 createProperties(currentProjectId, schema);
-        
+
         try {
             // return entity factory manager
             return cache.get(new CacheTuple(
@@ -140,7 +139,7 @@ public class EntityManagerFactoryCache {
         // return null
         return null;
     }
-    
+
     /**
      * Creates a hash map containing all necessary information for creating
      * a entity factory manager.
@@ -151,23 +150,9 @@ public class EntityManagerFactoryCache {
     private static Map<String, String> createProperties(
             UUID currentProjectId,
             OpenInfraSchemas schema) {
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put(
-                OpenInfraPropertyKeys.JDBC_DRIVER.toString(),
-                OpenInfraPropertyValues.JDBC_DRIVER.toString());
-        // 3. Set default properties
-        String user = OpenInfraProperties.getProperty(
-                OpenInfraPropertyKeys.USER.toString());
-        String password = OpenInfraProperties.getProperty(
-                OpenInfraPropertyKeys.PASSWORD.toString());
-        String url = String.format(
-                OpenInfraPropertyValues.URL.toString(),
-                OpenInfraProperties.getProperty(
-                        OpenInfraPropertyKeys.SERVER.toString()),
-                OpenInfraProperties.getProperty(
-                        OpenInfraPropertyKeys.PORT.toString()),
-                OpenInfraProperties.getProperty(
-                        OpenInfraPropertyKeys.DB_NAME.toString()));
+        // set the default database connection properties
+        Map<String, String> properties =
+                OpenInfraProperties.getConnectionProperties();
         // 3. Decide if the system or a project database schema is requested
         String currentSchema = "currentSchema=";
         switch (schema) {
@@ -180,13 +165,20 @@ public class EntityManagerFactoryCache {
             // Override default properties and set project and default search
             // path
             ProjectsPojo p = MetaDataManager.getProjects(currentProjectId);
-            user = p.getDatabaseConnection().getCredentials().getUsername();
-            password = p.getDatabaseConnection().getCredentials().getPassword();
-            url = String.format(
-                    OpenInfraPropertyValues.URL.toString(),
-                    p.getDatabaseConnection().getServer().getServer(),
-                    p.getDatabaseConnection().getPort().getPort(),
-                    p.getDatabaseConnection().getDatabase().getDatabase());
+
+            properties.put(
+                    OpenInfraPropertyKeys.USER.toString(),
+                    p.getDatabaseConnection().getCredentials().getUsername());
+            properties.put(
+                    OpenInfraPropertyKeys.PASSWORD.toString(),
+                    p.getDatabaseConnection().getCredentials().getPassword());
+            properties.put(
+                    OpenInfraPropertyKeys.URL.toString(),
+                    String.format(
+                        OpenInfraPropertyValues.URL.toString(),
+                        p.getDatabaseConnection().getServer().getServer(),
+                        p.getDatabaseConnection().getPort().getPort(),
+                        p.getDatabaseConnection().getDatabase().getDatabase()));
             currentSchema +=
                     p.getDatabaseConnection().getSchema().getSchema() + "," +
                     OpenInfraPropertyValues.SEARCH_PATH;
@@ -204,12 +196,12 @@ public class EntityManagerFactoryCache {
                 OpenInfraPropertyValues.SEARCH_PATH;
             break;
         }
-        properties.put(OpenInfraPropertyKeys.USER.toString(), user);
-        properties.put(OpenInfraPropertyKeys.PASSWORD.toString(), password);
+        // add the schema to the default URL properties
         properties.put(
                 OpenInfraPropertyKeys.URL.toString(),
-                url + currentSchema);
-        
+                properties.get(
+                        OpenInfraPropertyKeys.URL.toString()) + currentSchema);
+
         return properties;
     }
 
@@ -228,7 +220,7 @@ public class EntityManagerFactoryCache {
     public static void setCacheSize(int cacheSize) {
         EntityManagerFactoryCache.cacheSize = cacheSize;
     }
-    
+
     /**
      * Creates a new entity manager factory using the Persistence class.
      * This method is called, if a new entry will be inserted in the
@@ -243,24 +235,24 @@ public class EntityManagerFactoryCache {
                 cacheTuple.getPersistenceUnitName(),
                 cacheTuple.getProperties());
     }
-    
+
     /**
      * This class represents a key used to cache entity manager factories.
      * @author <a href="http://www.b-tu.de">BTU</a> DBIS
      *
      */
-    private static class CacheTuple { 
-        
+    private static class CacheTuple {
+
         /**
          * Name of the persistence unit.
          */
-        private String persistenceUnitName; 
-        
+        private String persistenceUnitName;
+
         /**
          * Properties to use when creating the factory.
          */
         private Map<String, String> properties;
-        
+
         /**
          * Creates a cache tuple using the given parameters.
          * @param persistenceUnitName name of the persistence unit
@@ -268,11 +260,11 @@ public class EntityManagerFactoryCache {
          */
         public CacheTuple(
                 String persistenceUnitName,
-                Map<String, String> properties) { 
-            this.persistenceUnitName = persistenceUnitName; 
-            this.properties = properties; 
-        }   
-        
+                Map<String, String> properties) {
+            this.persistenceUnitName = persistenceUnitName;
+            this.properties = properties;
+        }
+
         /**
          * Returns the name of the persistence unit.
          * @return the name of the persistence unit
@@ -298,7 +290,7 @@ public class EntityManagerFactoryCache {
             }
             return false;
         }
-        
+
         @Override
         public int hashCode() {
             return (persistenceUnitName.hashCode() + properties.hashCode());

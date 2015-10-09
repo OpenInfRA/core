@@ -30,7 +30,7 @@ public class SchemasDao
 
     @Override
     public SchemasPojo mapToPojo(Locale locale, Schemas s) {
-        return mapPojoStatically(s);
+        return mapToPojoStatically(s);
     }
 
     /**
@@ -39,7 +39,7 @@ public class SchemasDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static SchemasPojo mapPojoStatically(Schemas s) {
+    public static SchemasPojo mapToPojoStatically(Schemas s) {
         if (s != null) {
             SchemasPojo pojo = new SchemasPojo(s);
             pojo.setSchema(s.getSchema());

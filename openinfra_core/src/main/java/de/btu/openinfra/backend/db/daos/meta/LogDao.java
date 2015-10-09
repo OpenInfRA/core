@@ -33,7 +33,7 @@ public class LogDao
 
     @Override
     public LogPojo mapToPojo(Locale locale, Log l) {
-        return mapPojoStatically(l);
+        return mapToPojoStatically(l);
     }
 
     /**
@@ -42,7 +42,7 @@ public class LogDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static LogPojo mapPojoStatically(Log l) {
+    public static LogPojo mapToPojoStatically(Log l) {
         if(l != null) {
             LogPojo pojo = new LogPojo(l);
             // TODO this must be placed somewhere in the properties
@@ -51,8 +51,8 @@ public class LogDao
             pojo.setUserId(l.getUserId());
             pojo.setUserName(l.getUserName());
             pojo.setCreatedOn(df.format(l.getCreatedOn()).toString());
-            pojo.setLogger(LoggerDao.mapPojoStatically(l.getLoggerBean()));
-            pojo.setLevel(LevelDao.mapPojoStatically(l.getLevelBean()));
+            pojo.setLogger(LoggerDao.mapToPojoStatically(l.getLoggerBean()));
+            pojo.setLevel(LevelDao.mapToPojoStatically(l.getLevelBean()));
             pojo.setMessage(l.getMessage());
             return pojo;
         } else {

@@ -30,7 +30,7 @@ public class DatabasesDao
 
     @Override
     public DatabasesPojo mapToPojo(Locale locale, Databases d) {
-        return mapPojoStatically(d);
+        return mapToPojoStatically(d);
     }
 
     /**
@@ -39,7 +39,7 @@ public class DatabasesDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static DatabasesPojo mapPojoStatically(Databases d) {
+    public static DatabasesPojo mapToPojoStatically(Databases d) {
         if (d != null) {
             DatabasesPojo pojo = new DatabasesPojo(d);
             pojo.setDatabase(d.getDatabase());

@@ -37,7 +37,7 @@ public class MetaDataManager {
 			        OpenInfraSchemas.META_DATA).createEntityManager();
 		}
 		
-		return ProjectsDao.mapPojoStatically(
+		return ProjectsDao.mapToPojoStatically(
 				emMeta.find(Projects.class, projectId));
 	}
 

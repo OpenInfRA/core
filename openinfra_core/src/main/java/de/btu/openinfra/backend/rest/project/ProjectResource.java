@@ -65,14 +65,14 @@ public class ProjectResource {
 		return new ProjectRbac(
 				null,
 				OpenInfraSchemas.META_DATA).readMainProjects(
-						PtLocaleDao.forLanguageTag(language));			
+						PtLocaleDao.forLanguageTag(language));
 	}
 
 	@GET
 	@Path("count")
 	@Produces({MediaType.TEXT_PLAIN})
 	public long getMainProjectsCount(
-			@Context UriInfo uriInfo, 
+			@Context UriInfo uriInfo,
 			@Context HttpServletRequest request) {
 		return new ProjectRbac(
 				null,
@@ -97,7 +97,7 @@ public class ProjectResource {
 						projectId,
 						OpenInfraSchemas.PROJECTS).read(
 								OpenInfraHttpMethod.valueOf(
-										request.getMethod()), 
+										request.getMethod()),
 								uriInfo,
 								PtLocaleDao.forLanguageTag(language),
 								projectId));
@@ -124,7 +124,7 @@ public class ProjectResource {
 		return new ProjectRbac(
 				projectId,
 				OpenInfraSchemas.PROJECTS).readSubProjects(
-						OpenInfraHttpMethod.valueOf(request.getMethod()), 
+						OpenInfraHttpMethod.valueOf(request.getMethod()),
 						uriInfo,
 						PtLocaleDao.forLanguageTag(language),
 						offset,
@@ -141,7 +141,7 @@ public class ProjectResource {
 		return new ProjectRbac(
 				projectId,
 				OpenInfraSchemas.PROJECTS).getSubProjectsCount(
-						OpenInfraHttpMethod.valueOf(request.getMethod()), 
+						OpenInfraHttpMethod.valueOf(request.getMethod()),
 						uriInfo);
 	}
 
@@ -156,7 +156,7 @@ public class ProjectResource {
                         projectId,
                         OpenInfraSchemas.PROJECTS)
                     .newSubProject(
-                    		OpenInfraHttpMethod.valueOf(request.getMethod()), 
+                    		OpenInfraHttpMethod.valueOf(request.getMethod()),
     						uriInfo,
     						PtLocaleDao.forLanguageTag(language));
     }
@@ -180,9 +180,11 @@ public class ProjectResource {
 			@Context HttpServletRequest request,
 			ProjectPojo project) {
 	    // create the project
-		UUID id = ProjectRbac.createProject(
-				project, 
-				OpenInfraHttpMethod.valueOf(request.getMethod()), uriInfo);
+		UUID id = new ProjectRbac(
+		        null, OpenInfraSchemas.PROJECTS).createProject(
+		                project,
+		                OpenInfraHttpMethod.valueOf(
+		                        request.getMethod()), uriInfo);
 		// TODO add informations to the meta data schema, this is necessary for
 		//      every REST end point this project should use
 		return OpenInfraResponseBuilder.postResponse(id);
@@ -214,7 +216,7 @@ public class ProjectResource {
     	UUID uuid = new ProjectRbac(
     			projectId,
     			OpenInfraSchemas.PROJECTS).createOrUpdate(
-    					OpenInfraHttpMethod.valueOf(request.getMethod()), 
+    					OpenInfraHttpMethod.valueOf(request.getMethod()),
 						uriInfo,
 						project);
     	return OpenInfraResponseBuilder.putResponse(uuid);
@@ -264,7 +266,7 @@ public class ProjectResource {
 		return new ProjectRbac(
 				projectId,
 				OpenInfraSchemas.PROJECTS).readParents(
-						OpenInfraHttpMethod.valueOf(request.getMethod()), 
+						OpenInfraHttpMethod.valueOf(request.getMethod()),
 						uriInfo,
 						PtLocaleDao.forLanguageTag(language));
 	}

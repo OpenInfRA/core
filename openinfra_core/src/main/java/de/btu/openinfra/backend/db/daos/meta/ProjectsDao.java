@@ -30,7 +30,7 @@ public class ProjectsDao
 
     @Override
     public ProjectsPojo mapToPojo(Locale locale, Projects p) {
-        return mapPojoStatically(p);
+        return mapToPojoStatically(p);
     }
 
     /**
@@ -39,11 +39,11 @@ public class ProjectsDao
      * @param p      the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static ProjectsPojo mapPojoStatically(Projects p) {
+    public static ProjectsPojo mapToPojoStatically(Projects p) {
         if (p != null) {
             ProjectsPojo pojo = new ProjectsPojo(p);
             pojo.setDatabaseConnection(
-                    DatabaseConnectionDao.mapPojoStatically(
+                    DatabaseConnectionDao.mapToPojoStatically(
                             p.getDatabaseConnection()));
             pojo.setIsSubproject(p.getIsSubproject());
             return pojo;

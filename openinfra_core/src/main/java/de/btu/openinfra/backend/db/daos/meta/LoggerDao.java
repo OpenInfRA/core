@@ -30,7 +30,7 @@ public class LoggerDao
 
     @Override
     public LoggerPojo mapToPojo(Locale locale, Logger l) {
-        return mapPojoStatically(l);
+        return mapToPojoStatically(l);
     }
 
     /**
@@ -39,7 +39,7 @@ public class LoggerDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static LoggerPojo mapPojoStatically(Logger l) {
+    public static LoggerPojo mapToPojoStatically(Logger l) {
         if (l != null) {
             LoggerPojo pojo = new LoggerPojo(l);
             pojo.setLogger(l.getLogger());

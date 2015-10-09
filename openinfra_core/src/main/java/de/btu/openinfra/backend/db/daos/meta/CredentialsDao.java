@@ -30,7 +30,7 @@ public class CredentialsDao
 
     @Override
     public CredentialsPojo mapToPojo(Locale locale, Credentials c) {
-        return mapPojoStatically(c);
+        return mapToPojoStatically(c);
     }
 
     /**
@@ -39,7 +39,7 @@ public class CredentialsDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-   public static CredentialsPojo mapPojoStatically(Credentials c) {
+   public static CredentialsPojo mapToPojoStatically(Credentials c) {
         if (c != null) {
             CredentialsPojo pojo = new CredentialsPojo(c);
             pojo.setUsername(c.getUsername());
