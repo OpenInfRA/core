@@ -3,6 +3,7 @@ package de.btu.openinfra.backend.db;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 import de.btu.openinfra.backend.db.daos.meta.ProjectsDao;
 import de.btu.openinfra.backend.db.jpa.model.meta.Projects;
@@ -38,12 +39,16 @@ public class MetaDataManager {
 		}
 
 		// retrieve the project from the meta data
-		Projects p = emMeta.createNamedQuery(
-              "Projects.findByProject",
-              Projects.class)
-              .setParameter("value", projectId)
-              .getSingleResult();
-		return ProjectsDao.mapPojoStatically(p);
+		try {
+    		Projects p = emMeta.createNamedQuery(
+                  "Projects.findByProject",
+                  Projects.class)
+                  .setParameter("value", projectId)
+                  .getSingleResult();
+    		return ProjectsDao.mapToPojoStatically(p);
+		} catch (NoResultException e) {
+            return null;
+        }
 	}
 
 }

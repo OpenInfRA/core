@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -13,11 +14,19 @@ import de.btu.openinfra.backend.db.jpa.model.OpenInfraModelObject;
 
 /**
  * The persistent class for the credentials database table.
- * 
+ *
  */
 @Entity
 @Table(schema="meta_data")
-@NamedQuery(name="Credentials.findAll", query="SELECT c FROM Credentials c")
+@NamedQueries({
+    @NamedQuery(
+            name="Credentials.findAll",
+            query="SELECT c FROM Credentials c"),
+    @NamedQuery(
+            name="Credentials.findByUsernameAndPassword",
+            query="SELECT c FROM Credentials c WHERE c.username = :username "
+                    + "AND c.password = :password")
+})
 public class Credentials extends OpenInfraModelObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 

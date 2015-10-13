@@ -30,7 +30,7 @@ public class SettingsDao
 
     @Override
     public SettingsPojo mapToPojo(Locale locale, Settings s) {
-        return mapPojoStatically(s);
+        return mapToPojoStatically(s);
     }
 
     /**
@@ -39,13 +39,13 @@ public class SettingsDao
      * @param s     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static SettingsPojo mapPojoStatically(Settings s) {
+    public static SettingsPojo mapToPojoStatically(Settings s) {
         if (s != null) {
             SettingsPojo pojo = new SettingsPojo(s);
-            pojo.setKey(SettingKeysDao.mapPojoStatically(s.getSettingKey()));
+            pojo.setKey(SettingKeysDao.mapToPojoStatically(s.getSettingKey()));
             pojo.setUpdatedOn(s.getUpdatedOn());
             pojo.setValue(s.getValue());
-            pojo.setProject(ProjectsDao.mapPojoStatically(s.getProject()));
+            pojo.setProject(ProjectsDao.mapToPojoStatically(s.getProject()));
             return pojo;
         } else {
             return null;

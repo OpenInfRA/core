@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -13,11 +14,16 @@ import de.btu.openinfra.backend.db.jpa.model.OpenInfraModelObject;
 
 /**
  * The persistent class for the ports database table.
- * 
+ *
  */
 @Entity
 @Table(schema="meta_data")
-@NamedQuery(name="Ports.findAll", query="SELECT p FROM Ports p")
+@NamedQueries({
+    @NamedQuery(name="Ports.findAll", query="SELECT p FROM Ports p"),
+    @NamedQuery(
+            name="Ports.findByPort",
+            query="SELECT p FROM Ports p WHERE p.port = :port")
+})
 public class Ports extends OpenInfraModelObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 

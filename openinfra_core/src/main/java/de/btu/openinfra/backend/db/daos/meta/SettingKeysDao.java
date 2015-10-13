@@ -22,7 +22,7 @@ public class SettingKeysDao extends OpenInfraDao<SettingKeysPojo, SettingKeys> {
 
     @Override
     public SettingKeysPojo mapToPojo(Locale locale, SettingKeys sk) {
-        return mapPojoStatically(sk);
+        return mapToPojoStatically(sk);
     }
 
     /**
@@ -31,7 +31,7 @@ public class SettingKeysDao extends OpenInfraDao<SettingKeysPojo, SettingKeys> {
      * @param sk     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static SettingKeysPojo mapPojoStatically(SettingKeys sk) {
+    public static SettingKeysPojo mapToPojoStatically(SettingKeys sk) {
         if (sk != null) {
             SettingKeysPojo pojo = new SettingKeysPojo(sk);
             pojo.setKey(sk.getKey());

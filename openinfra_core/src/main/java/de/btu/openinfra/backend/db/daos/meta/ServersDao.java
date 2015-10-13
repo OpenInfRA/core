@@ -30,7 +30,7 @@ public class ServersDao
 
     @Override
     public ServersPojo mapToPojo(Locale locale, Servers s) {
-        return mapPojoStatically(s);
+        return mapToPojoStatically(s);
     }
 
     /**
@@ -39,7 +39,7 @@ public class ServersDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static ServersPojo mapPojoStatically(Servers s) {
+    public static ServersPojo mapToPojoStatically(Servers s) {
         if (s != null) {
             ServersPojo pojo = new ServersPojo(s);
             pojo.setServer(s.getServer());

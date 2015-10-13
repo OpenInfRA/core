@@ -30,7 +30,7 @@ public class PortsDao
 
     @Override
     public PortsPojo mapToPojo(Locale locale, Ports p) {
-        return mapPojoStatically(p);
+        return mapToPojoStatically(p);
     }
 
     /**
@@ -39,7 +39,7 @@ public class PortsDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static PortsPojo mapPojoStatically(Ports p) {
+    public static PortsPojo mapToPojoStatically(Ports p) {
         if (p != null) {
             PortsPojo pojo = new PortsPojo(p);
             pojo.setPort(p.getPort());

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -13,11 +14,16 @@ import de.btu.openinfra.backend.db.jpa.model.OpenInfraModelObject;
 
 /**
  * The persistent class for the databases database table.
- * 
+ *
  */
 @Entity
 @Table(schema="meta_data")
-@NamedQuery(name="Databases.findAll", query="SELECT d FROM Databases d")
+@NamedQueries({
+    @NamedQuery(name="Databases.findAll", query="SELECT d FROM Databases d"),
+    @NamedQuery(
+            name="Databases.findByDatabase",
+            query="SELECT d FROM Databases d WHERE d.database = :database")
+})
 public class Databases extends OpenInfraModelObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 

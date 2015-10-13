@@ -30,7 +30,7 @@ public class LevelDao
 
     @Override
     public LevelPojo mapToPojo(Locale locale, Level l) {
-        return null;
+        return mapToPojoStatically(l);
     }
 
     /**
@@ -39,7 +39,7 @@ public class LevelDao
      * @param at     the model object
      * @return       the POJO object when the model object is not null else null
      */
-    public static LevelPojo mapPojoStatically(Level l) {
+    public static LevelPojo mapToPojoStatically(Level l) {
         if(l != null) {
             LevelPojo pojo = new LevelPojo(l);
             pojo.setLevel(l.getLevel());
