@@ -8,125 +8,84 @@ package de.btu.openinfra.backend;
  *
  */
 public enum OpenInfraPropertyKeys {
-
+	
 	/**
 	 * This variable defines the JDBC driver property.
 	 */
-	JDBC_DRIVER {
-		@Override
-		public String toString() {
-			return "javax.persistence.jdbc.driver";
-		}
-	},
+	JDBC_DRIVER("javax.persistence.jdbc.driver"),
 	
 	/**
 	 * This variable defines the user property.
 	 */
-	USER {
-		@Override
-		public String toString() {
-			return "javax.persistence.jdbc.user";
-		}
-	},
+	USER("javax.persistence.jdbc.user"),
 	
 	/**
 	 * This variable defines the password property.
 	 */
-	PASSWORD {
-		@Override
-		public String toString() {
-			return "javax.persistence.jdbc.password";
-		}
-	},
+	PASSWORD("javax.persistence.jdbc.password"),
 	
 	/**
 	 * This variable defines the used server.
 	 */
-	SERVER {
-		@Override
-		public String toString() {
-			return "de.btu.openinfra.backend.db.jpa.server";
-		}
-	},	
+	SERVER("de.btu.openinfra.backend.db.jpa.server"),	
 
 	/**
 	 * This variable defines the server port.
 	 */
-	PORT {
-		@Override
-		public String toString() {
-			return "de.btu.openinfra.backend.db.jpa.port";
-		}
-	},
+	PORT("de.btu.openinfra.backend.db.jpa.port"),
 	
 	/**
 	 * This variable defines the database name.
 	 */
-	DB_NAME {
-		@Override
-		public String toString() {
-			return "de.btu.openinfra.backend.db.jpa.dbname";
-		}
-	},
+	DB_NAME("de.btu.openinfra.backend.db.jpa.dbname"),
 
 	/**
 	 * This variable defines the URL property.
 	 */
-	URL {
-		@Override
-		public String toString() {
-			return "javax.persistence.jdbc.url";
-		}
-	},
+	URL("javax.persistence.jdbc.url"),
 	
 	/**
 	 * This variable defines the default offset of the window functionality.
 	 */
-	DEFAULT_OFFSET {
-	    @Override
-	    public String toString() {
-	        return "de.btu.openinfra.backend.rest.defaultOffset";
-	    }
-	},
+	DEFAULT_OFFSET("de.btu.openinfra.backend.rest.defaultOffset"),
 	
 	/**
      * This variable defines the default size of the window functionality.
      */
-    DEFAULT_SIZE {
-        @Override
-        public String toString() {
-            return "de.btu.openinfra.backend.rest.defaultSize";
-        }
-    },
+    DEFAULT_SIZE("de.btu.openinfra.backend.rest.defaultSize"),
 	
     /**
      * This variable defines a max size for the window functionality.
      */
-    MAX_SIZE {
-        @Override
-        public String toString() {
-            return "de.btu.openinfra.backend.rest.maxSize";
-        }
-    },
+    MAX_SIZE("de.btu.openinfra.backend.rest.maxSize"),
     
     /**
      * This variable defines the default language key.
      */
-    DEFAULT_LANGUAGE {
-    	@Override
-    	public String toString() {
-    		return "de.btu.openinfra.backend.language.default";
-    	}
-    },
+    DEFAULT_LANGUAGE("de.btu.openinfra.backend.language.default"),
     
     /**
      * This variable defines the default order key.
      */
-    DEFAULT_ORDER {
-    	@Override
-    	public String toString() {
-    		return "de.btu.openinfra.backend.order";
-    	}
-    }
+    DEFAULT_ORDER("de.btu.openinfra.backend.order"),
+    
+    /**
+     * This variable defines the default file path for unix key.
+     */
+    UNIX_FILE_PATH("de.btu.openinfra.backend.unix.file.path"),
+    
+    /**
+     * This variable defines the default file path for Windows key.
+     */
+    WIN_FILE_PATH("de.btu.openinfra.backend.win.file.path");
+    
+	private String key;
+	private OpenInfraPropertyKeys(String key) {
+		this.key = key;
+	}
+	
+	public String getKey() {
+		return this.key;
+	}
 
 }

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Properties;
 
-import de.btu.openinfra.backend.db.OpenInfraPropertyValues;
 import de.btu.openinfra.backend.db.OpenInfraSortOrder;
 import de.btu.openinfra.backend.db.daos.PtLocaleDao;
 
@@ -33,7 +32,7 @@ public class OpenInfraProperties {
 	 * loading times.
 	 */
 	public static final int DEFAULT_OFFSET = Integer.parseInt(
-            getProperty(OpenInfraPropertyKeys.DEFAULT_OFFSET.toString()));
+            getProperty(OpenInfraPropertyKeys.DEFAULT_OFFSET.getKey()));
 
 	/**
 	 * This variable defines the default size for lists. This should be used
@@ -41,27 +40,60 @@ public class OpenInfraProperties {
 	 * loading times.
 	 */
 	public static final int DEFAULT_SIZE = Integer.parseInt(
-           getProperty(OpenInfraPropertyKeys.DEFAULT_SIZE.toString()));
+           getProperty(OpenInfraPropertyKeys.DEFAULT_SIZE.getKey()));
 
 	/**
      * This variable defines the max size for lists. This should be used
      * when the resource must be restricted due to heavy load to the server.
      */
     public static final int MAX_SIZE = Integer.parseInt(
-            getProperty(OpenInfraPropertyKeys.MAX_SIZE.toString()));
+            getProperty(OpenInfraPropertyKeys.MAX_SIZE.getKey()));
 
     /**
      * This variable defines the default language.
      */
     public static final Locale DEFAULT_LANGUAGE = PtLocaleDao.forLanguageTag(
-    		getProperty(OpenInfraPropertyKeys.DEFAULT_LANGUAGE.toString()));
+    		getProperty(OpenInfraPropertyKeys.DEFAULT_LANGUAGE.getKey()));
 
     /**
      * This variable defines the default sort order.
      */
     public static final OpenInfraSortOrder DEFAULT_ORDER =
     		OpenInfraSortOrder.valueOf(getProperty(
-    				OpenInfraPropertyKeys.DEFAULT_ORDER.toString()));
+    				OpenInfraPropertyKeys.DEFAULT_ORDER.getKey()));
+    
+    /**
+     * This variable defines the file path depending on the OS OpenInfRA is
+     * currently running.
+     */
+    public static final String FILE_PATH = getFilePath();
+    	
+    /**
+     * This is a simple method to decide on which OS OpenInfRA is running.
+     * http://stackoverflow.com/questions/3282498/how-can-i-detect-a-unix-like-os-in-java
+     * 
+     * @return the specific file path
+     */
+    private static String getFilePath() {
+        // includes: Windows 2000,  Windows 95, Windows 98, Windows NT,
+    	// Windows Vista, Windows XP
+    	// Otherwise return the unix file path
+    	if (System.getProperty("os.name").startsWith("Windows")) {
+    		String path = getProperty(
+    				OpenInfraPropertyKeys.WIN_FILE_PATH.getKey());
+    		if(!path.endsWith("\\")) {
+    			path += "\\";
+    		}
+    		return path;
+        } else {
+        	String path = getProperty(
+        			OpenInfraPropertyKeys.UNIX_FILE_PATH.getKey());
+        	if(!path.endsWith("/")) {
+        		path += "/";
+        	}
+            return path;
+        } 
+    }
 
 	/**
 	 * This method retrieves the required information from the property file
@@ -95,29 +127,29 @@ public class OpenInfraProperties {
 	    HashMap<String, String> properties = new HashMap<String, String>();
 	    // add the jdbc driver properties
 	    properties.put(
-                OpenInfraPropertyKeys.JDBC_DRIVER.toString(),
-                OpenInfraPropertyValues.JDBC_DRIVER.toString());
+                OpenInfraPropertyKeys.JDBC_DRIVER.getKey(),
+                OpenInfraPropertyValues.JDBC_DRIVER.getValue());
 	    // add the user properties
         properties.put(
-                OpenInfraPropertyKeys.USER.toString(),
+                OpenInfraPropertyKeys.USER.getKey(),
                 OpenInfraProperties.getProperty(
-                        OpenInfraPropertyKeys.USER.toString()));
+                        OpenInfraPropertyKeys.USER.getKey()));
         // add the password properties
         properties.put(
-                OpenInfraPropertyKeys.PASSWORD.toString(),
+                OpenInfraPropertyKeys.PASSWORD.getKey(),
                 OpenInfraProperties.getProperty(
-                        OpenInfraPropertyKeys.PASSWORD.toString()));
+                        OpenInfraPropertyKeys.PASSWORD.getKey()));
         // add the URL properties
         properties.put(
-                OpenInfraPropertyKeys.URL.toString(),
+                OpenInfraPropertyKeys.URL.getKey(),
                 String.format(
-                    OpenInfraPropertyValues.URL.toString(),
+                    OpenInfraPropertyValues.URL.getValue(),
                     OpenInfraProperties.getProperty(
-                            OpenInfraPropertyKeys.SERVER.toString()),
+                            OpenInfraPropertyKeys.SERVER.getKey()),
                     OpenInfraProperties.getProperty(
-                            OpenInfraPropertyKeys.PORT.toString()),
+                            OpenInfraPropertyKeys.PORT.getKey()),
                     OpenInfraProperties.getProperty(
-                            OpenInfraPropertyKeys.DB_NAME.toString())));
+                            OpenInfraPropertyKeys.DB_NAME.getKey())));
 
 	    return properties;
 	}

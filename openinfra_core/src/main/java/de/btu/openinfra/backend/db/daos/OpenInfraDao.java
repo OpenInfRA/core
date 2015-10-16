@@ -24,6 +24,9 @@ import de.btu.openinfra.backend.db.jpa.model.OpenInfraModelObject;
 import de.btu.openinfra.backend.db.jpa.model.PtLocale;
 import de.btu.openinfra.backend.db.pojos.MetaDataPojo;
 import de.btu.openinfra.backend.db.pojos.OpenInfraPojo;
+import de.btu.openinfra.backend.exception.OpenInfraEntityException;
+import de.btu.openinfra.backend.exception.OpenInfraExceptionTypes;
+import de.btu.openinfra.backend.exception.OpenInfraWebException;
 
 /**
  * This class is used to provide a sophisticated way to manage the JPA entity
@@ -230,12 +233,11 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
 	 * @return        the UUID of the newly created or replaced object
 	 * @throws RuntimeException
 	 */
-	public UUID createOrUpdate(TypePojo pojo, UUID valueId)
-			throws RuntimeException {
+	public UUID createOrUpdate(TypePojo pojo, UUID valueId) {
 
 		if(valueId != null && !valueId.equals(pojo.getUuid())) {
-			// TODO throw openinfra exception
-			throw new RuntimeException("UUIDs are incompatible URI vs POJO");
+			throw new OpenInfraEntityException(
+					OpenInfraExceptionTypes.INCOMPATIBLE_UUIDS);
 		}
 
 	    TypeModel model = createModelObject(valueId);
@@ -249,13 +251,13 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
         if (valueId != null && !modelClass.getSimpleName().equals("Project")) {
             // check if a TRID was sent by the client
             if (pojo.getTrid() == 0) {
-                // TODO throw openinfra exception
-                throw new RuntimeException("No TRID passed");
+                throw new OpenInfraEntityException(
+                		OpenInfraExceptionTypes.NO_TRID_PASSED);
             }
             // check if the TRID from the POJO equals the models xmin
             if (pojo.getTrid() != model.getXmin()) {
-                // TODO throw openinfra exception
-                throw new RuntimeException("Out of date");
+            	throw new OpenInfraEntityException(
+            			OpenInfraExceptionTypes.ENTITY_EXPIRED);
             }
         }
 
@@ -279,7 +281,7 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
 			if(et != null && et.isActive()) {
 				et.rollback();
 			} // end if
-			throw ex;
+			throw new OpenInfraWebException(ex);
 		} // end try catch
     }
 

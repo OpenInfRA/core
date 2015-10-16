@@ -16,6 +16,7 @@ import com.google.common.cache.LoadingCache;
 import de.btu.openinfra.backend.OpenInfraApplication;
 import de.btu.openinfra.backend.OpenInfraProperties;
 import de.btu.openinfra.backend.OpenInfraPropertyKeys;
+import de.btu.openinfra.backend.OpenInfraPropertyValues;
 import de.btu.openinfra.backend.db.daos.ProjectDao;
 import de.btu.openinfra.backend.db.pojos.ProjectPojo;
 import de.btu.openinfra.backend.db.pojos.meta.ProjectsPojo;
@@ -158,8 +159,8 @@ public class EntityManagerFactoryCache {
         switch (schema) {
         case META_DATA:
             currentSchema +=
-                OpenInfraPropertyValues.META_DATA_SEARCH_PATH + "," +
-                OpenInfraPropertyValues.SEARCH_PATH;
+                OpenInfraPropertyValues.META_DATA_SEARCH_PATH.getValue() + "," +
+                OpenInfraPropertyValues.SEARCH_PATH.getValue();
             break;
         case PROJECTS:
             // Override default properties and set project and default search
@@ -171,45 +172,46 @@ public class EntityManagerFactoryCache {
             if(p == null) {
                 break;
             }
-
+            
             // overwrite the properties from the properties file with content
             // from the database
             properties.put(
-                    OpenInfraPropertyKeys.USER.toString(),
+                    OpenInfraPropertyKeys.USER.getKey(),
                     p.getDatabaseConnection().getCredentials().getUsername());
             properties.put(
-                    OpenInfraPropertyKeys.PASSWORD.toString(),
+                    OpenInfraPropertyKeys.PASSWORD.getKey(),
                     p.getDatabaseConnection().getCredentials().getPassword());
             properties.put(
-                    OpenInfraPropertyKeys.URL.toString(),
+                    OpenInfraPropertyKeys.URL.getKey(),
                     String.format(
-                        OpenInfraPropertyValues.URL.toString(),
+                        OpenInfraPropertyValues.URL.getValue(),
                         p.getDatabaseConnection().getServer().getServer(),
                         p.getDatabaseConnection().getPort().getPort(),
                         p.getDatabaseConnection().getDatabase().getDatabase()));
-
+                        
             currentSchema +=
                     p.getDatabaseConnection().getSchema().getSchema() + "," +
-                    OpenInfraPropertyValues.SEARCH_PATH;
+                    OpenInfraPropertyValues.SEARCH_PATH.getValue();
             break;
         case RBAC:
-        	currentSchema += OpenInfraPropertyValues.RBAC_SEARCH_PATH + "," +
-        			OpenInfraPropertyValues.SEARCH_PATH;
+        	currentSchema += OpenInfraPropertyValues.RBAC_SEARCH_PATH.getValue() 
+        	+ "," + OpenInfraPropertyValues.SEARCH_PATH.getValue();
         	break;
         case SYSTEM:
             // fall through
         default:
             // set default search path
             currentSchema +=
-                OpenInfraPropertyValues.SYSTEM_SEARCH_PATH + "," +
-                OpenInfraPropertyValues.SEARCH_PATH;
+                OpenInfraPropertyValues.SYSTEM_SEARCH_PATH.getValue() + "," +
+                OpenInfraPropertyValues.SEARCH_PATH.getValue();
             break;
         }
+
         // add the schema to the default URL properties
         properties.put(
-                OpenInfraPropertyKeys.URL.toString(),
+                OpenInfraPropertyKeys.URL.getKey(),
                 properties.get(
-                        OpenInfraPropertyKeys.URL.toString()) + currentSchema);
+                        OpenInfraPropertyKeys.URL.getKey()) + currentSchema);
 
         return properties;
     }

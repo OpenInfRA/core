@@ -6,8 +6,6 @@ import java.util.Locale;
 import java.util.UUID;
 
 import javax.persistence.EntityTransaction;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 
 import de.btu.openinfra.backend.OpenInfraProperties;
 import de.btu.openinfra.backend.OpenInfraTime;
@@ -21,6 +19,8 @@ import de.btu.openinfra.backend.db.pojos.rbac.RolePojo;
 import de.btu.openinfra.backend.db.pojos.rbac.SubjectPojo;
 import de.btu.openinfra.backend.db.pojos.rbac.SubjectProjectPojo;
 import de.btu.openinfra.backend.db.rbac.OpenInfraRealm;
+import de.btu.openinfra.backend.exception.OpenInfraEntityException;
+import de.btu.openinfra.backend.exception.OpenInfraExceptionTypes;
 
 /**
  * This is the DAO class for users. In this case the map to model method skips
@@ -53,7 +53,8 @@ public class SubjectDao extends OpenInfraDao<SubjectPojo, Subject> {
 							"login",
 							login).getSingleResult();			
 		} catch(Exception ex) {
-			throw new WebApplicationException(Response.Status.NOT_FOUND);
+			throw new OpenInfraEntityException(
+					OpenInfraExceptionTypes.ENTITY_NOT_FOUND);
 		}
 	}
 	

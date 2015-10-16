@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -58,7 +59,7 @@ public class OpenInfraRealm extends AuthorizingRealm {
 							s.getPassword(),
 							new SimpleByteSource(s.getSalt().toString()));
 		} else {
-			throw new WebApplicationException(403);
+			throw new WebApplicationException(Status.FORBIDDEN);
 		}
 	}
 	

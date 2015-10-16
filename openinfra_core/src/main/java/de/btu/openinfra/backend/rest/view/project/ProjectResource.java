@@ -94,6 +94,16 @@ public class ProjectResource {
 									offset,
 									size));
 	}
+	
+	@GET
+	@Path("{projectId}/files")
+	@Template(name="/views/Upload.jsp")
+	@Produces(MediaType.TEXT_HTML +
+			OpenInfraResponseBuilder.UTF8_CHARSET +
+			OpenInfraResponseBuilder.HTML_PRIORITY)
+    public Response files() {
+        return Response.ok().entity("file upload").build();
+    }
 
 	@GET
 	@Path("/maps")

@@ -42,7 +42,9 @@ import de.btu.openinfra.backend.db.pojos.meta.ProjectsPojo;
 import de.btu.openinfra.backend.db.pojos.meta.SchemasPojo;
 import de.btu.openinfra.backend.db.pojos.meta.ServersPojo;
 import de.btu.openinfra.backend.exception.OpenInfraDatabaseException;
+import de.btu.openinfra.backend.exception.OpenInfraEntityException;
 import de.btu.openinfra.backend.exception.OpenInfraExceptionTypes;
+import de.btu.openinfra.backend.exception.OpenInfraWebException;
 
 /**
  * This class represents the Project and is used to access the underlying layer
@@ -424,8 +426,7 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
      *         schema failed.
      * @return
      */
-    private void createSchema(ProjectPojo pojo, UUID newProjectId)
-            throws OpenInfraDatabaseException {
+    private void createSchema(ProjectPojo pojo, UUID newProjectId) {
         try {
             // set the default database connection properties
             Map<String, String> properties =
@@ -458,8 +459,6 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
         } catch (PersistenceException pe) {
             throw new OpenInfraDatabaseException(
                     OpenInfraExceptionTypes.CREATE_SCHEMA);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -666,8 +665,6 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
             // thrown by createOrUpdate
             throw new OpenInfraDatabaseException(
                     OpenInfraExceptionTypes.INSERT_META_DATA);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -716,7 +713,7 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
                 // delete the entry from projects in the meta data schema
                 pDao.delete(pMeta.getId());
             } catch (RuntimeException ex) {
-                throw ex;
+                throw new OpenInfraWebException(ex);
             }
 
             // read the database connection to retrieve the id's for the next
@@ -763,8 +760,8 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
             } catch (RuntimeException ex) { /* do nothing */ }
 
         } catch (NoResultException nre) {
-            // abort if the project id was not found in the meta data
-            // TODO throw something to inform the REST interface
+            throw new OpenInfraEntityException(
+            		OpenInfraExceptionTypes.ENTITY_NOT_FOUND);
         }
     }
 
@@ -777,8 +774,7 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
      * @throws SchemaCreationException
      * @return
      */
-    private void writeBasicProjectData(ProjectPojo pojo, UUID newProjectId)
-            throws OpenInfraDatabaseException {
+    private void writeBasicProjectData(ProjectPojo pojo, UUID newProjectId) {
         try {
             // create a POJO for the project in the recent created project
             // schema
@@ -798,8 +794,6 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
         } catch (RuntimeException re) {
             throw new OpenInfraDatabaseException(
                     OpenInfraExceptionTypes.INSERT_BASIC_PROJECT_DATA);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -811,8 +805,7 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
      * @throws SchemaCreationException
      * @return
      */
-    private void mergeSystemData(UUID newProjectId)
-            throws OpenInfraDatabaseException {
+    private void mergeSystemData(UUID newProjectId) {
         try {
             // merge the content of the system schema into the new project
             // schema
@@ -829,12 +822,10 @@ public class ProjectDao extends OpenInfraDao<ProjectPojo, Project> {
                 throw new OpenInfraDatabaseException(
                         OpenInfraExceptionTypes.MERGE_SYSTEM);
             }
-        } catch (PersistenceException pe) {
+        } catch (PersistenceException | IllegalArgumentException pe) {
             // something went wrong while merging the data
             throw new OpenInfraDatabaseException(
                     OpenInfraExceptionTypes.MERGE_SYSTEM);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
         }
     }
 }

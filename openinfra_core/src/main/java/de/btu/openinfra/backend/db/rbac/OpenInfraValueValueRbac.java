@@ -1,11 +1,10 @@
 package de.btu.openinfra.backend.db.rbac;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.json.simple.JSONObject;
@@ -14,6 +13,7 @@ import de.btu.openinfra.backend.db.OpenInfraSchemas;
 import de.btu.openinfra.backend.db.daos.OpenInfraValueValueDao;
 import de.btu.openinfra.backend.db.jpa.model.OpenInfraModelObject;
 import de.btu.openinfra.backend.db.pojos.OpenInfraPojo;
+import de.btu.openinfra.backend.exception.OpenInfraWebException;
 
 public class OpenInfraValueValueRbac<
 	TypePojo extends OpenInfraPojo,
@@ -64,11 +64,10 @@ public class OpenInfraValueValueRbac<
 									valueId2,
 									offset,
 									size);
-		} catch(Exception ex) {
-			ex.printStackTrace();
-			throw new WebApplicationException(
-					ex.getMessage(),
-					Response.Status.INTERNAL_SERVER_ERROR);
+		} catch (InstantiationException   | IllegalAccessException | 
+				 IllegalArgumentException | InvocationTargetException | 
+				 NoSuchMethodException    | SecurityException ex) {
+			throw new OpenInfraWebException(ex);
 		}
 	}
 
@@ -104,11 +103,10 @@ public class OpenInfraValueValueRbac<
                             secondAssociationId,
                             secondAssociationIdFromPojo,
                             json);
-        } catch(Exception ex) {
-            ex.printStackTrace();
-            throw new WebApplicationException(
-                    ex.getMessage(),
-                    Response.Status.INTERNAL_SERVER_ERROR);
-        }
+		} catch (InstantiationException   | IllegalAccessException | 
+				 IllegalArgumentException | InvocationTargetException | 
+				 NoSuchMethodException    | SecurityException ex) {
+			throw new OpenInfraWebException(ex);
+		}
     }
 }

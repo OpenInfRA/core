@@ -10,6 +10,8 @@ import org.json.simple.JSONObject;
 import de.btu.openinfra.backend.db.OpenInfraSchemas;
 import de.btu.openinfra.backend.db.jpa.model.OpenInfraModelObject;
 import de.btu.openinfra.backend.db.pojos.OpenInfraPojo;
+import de.btu.openinfra.backend.exception.OpenInfraEntityException;
+import de.btu.openinfra.backend.exception.OpenInfraExceptionTypes;
 
 /**
  * This class extends the OpenInfraValueDao class in order to provide another
@@ -131,13 +133,15 @@ public abstract class OpenInfraValueValueDao<
         // check if the value id of the URI map to the pojo uuid
         if (firstAssociationId != null &&
                 !firstAssociationId.equals(firstAssociationIdFromPojo)) {
-            throw new RuntimeException("UUIDs are incompatible URI vs POJO");
+            throw new OpenInfraEntityException(
+            		OpenInfraExceptionTypes.INCOMPATIBLE_UUIDS);
         }
 
         if (secondAssociationIdFromPojo != null &&
                 !secondAssociationIdFromPojo.equals(
                         secondAssociationIdFromPojo)) {
-            throw new RuntimeException("UUIDs are incompatible URI vs POJO");
+            throw new OpenInfraEntityException(
+            		OpenInfraExceptionTypes.INCOMPATIBLE_UUIDS);
         }
 
         if (metaData != null) {
