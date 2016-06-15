@@ -172,9 +172,11 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
     					if("".equals(ls.getCharacterString())) {
     						it.remove();
     					} else {
-    					    // write string and escape it to prevent XSS
-    						lcs.setFreeText(escapeString(
-    								ls.getCharacterString()));
+    						/*
+    					     	* Write string - don't escape on input, 
+ 					     	* xss prevention must be done at string usage
+						*/
+    						lcs.setFreeText(ls.getCharacterString());
     					} // end if else
     					break;
     				} // end if
@@ -188,7 +190,13 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
     				lcs.setPtLocale(em.find(
     						PtLocale.class,
     						ls.getLocale().getUuid()));
-    				lcs.setFreeText(escapeString(ls.getCharacterString()));
+
+    				/*
+				 * Write string - don't escape on input, 
+				 * xss prevention must be done at string usage
+				 */
+    				lcs.setFreeText(ls.getCharacterString());
+
     				lcs.setPtFreeText(ptf);
     				lcsList.add(lcs);
     			} // end if
