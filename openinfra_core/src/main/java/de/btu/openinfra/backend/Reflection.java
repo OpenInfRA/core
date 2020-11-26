@@ -44,8 +44,8 @@ public class Reflection {
     public static <Type> List<Class<? extends Type>> findAllClasses(
             Reflections reflections) {
         // get all class names
-        Set<String> classNames = reflections.getStore().getStoreMap().get(
-                "TypeElementsScanner").keySet();
+        Set<String> classNames = reflections.getStore()
+                .get("TypeElementsScanner").keySet();
 
         // return the list of classes
         return ReflectionUtils.forNames(classNames, reflections

@@ -58,7 +58,7 @@ public class OpenInfraRestApi {
 	 * WADL into HTML.
 	 *
 	 * @param uriInfo
-	 * @return
+	 * @return Response object.
 	 */
 	@GET
 	public Response getRestApi(@Context UriInfo uriInfo) {

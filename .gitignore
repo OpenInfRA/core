@@ -7,3 +7,6 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+nb-configuration.xml
+openinfra_core/.vscode/
+openinfra_core/.settings/

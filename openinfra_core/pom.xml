@@ -1,129 +1,187 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.btu.openinfra.core</groupId>
-  <artifactId>openinfra_core</artifactId>
-  <version>2.0.0</version>
-  <packaging>war</packaging>
-  <name>openinfra_core</name>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.btu.openinfra.core</groupId>
+    <artifactId>openinfra_core</artifactId>
+    <version>2.1.0</version>
+    <packaging>war</packaging>
+    <name>openinfra_core</name>
   
     <build>
         <finalName>openinfra_core</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.0.5</version>
+                                </requireMavenVersion>
+                            </rules>    
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.8.0</version>
                 <inherited>true</inherited>
                 <configuration>
+                    <compilerArgs>
+                        <arg>-Xlint</arg>
+                    </compilerArgs>
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
             </plugin>
             <!-- Tests are currently skipped -->
-		    <plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12.4</version>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-		    </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
             <!-- Generate JavaDoc-enriched extended WADL
-              https://irfannagoo.wordpress.com/2012/12/20/jersey-extended-wadl-support/
-              http://razvancaraghin.blogspot.de/2014/01/html-documentation-for-your-rest.html
-              http://biemond.blogspot.de/2013/08/custom-jersey-wadl-generation.html -->
+            https://irfannagoo.wordpress.com/2012/12/20/jersey-extended-wadl-support/
+            http://razvancaraghin.blogspot.de/2014/01/html-documentation-for-your-rest.html
+            http://biemond.blogspot.de/2013/08/custom-jersey-wadl-generation.html -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
+                <version>3.0.1</version>
                 <executions>
-                    <execution>
-                    	<id>generate-extended-wadl</id>
-		                <configuration>
-		                    <encoding>UTF-8</encoding>
-		                    <verbose>false</verbose>
-		                    <show>public</show>
-		                    <doclet>com.sun.jersey.wadl.resourcedoc.ResourceDoclet</doclet>
-		                        <docletPath>${path.separator}${project.build.outputDirectory}</docletPath>
-		                        <docletArtifacts>
-		                        <docletArtifact>
-		                            <groupId>com.sun.jersey.contribs</groupId>
-		                            <artifactId>wadl-resourcedoc-doclet</artifactId>
-		                            <version>1.17.1</version>
-		                        </docletArtifact>
-		                        <docletArtifact>
-		                            <groupId>com.sun.jersey</groupId>
-		                            <artifactId>jersey-server</artifactId>
-		                            <version>1.17.1</version>
-		                        </docletArtifact>
-		                        <docletArtifact>
-		                            <groupId>xerces</groupId>
-		                            <artifactId>xercesImpl</artifactId>
-		                            <version>2.6.1</version>
-		                        </docletArtifact>
-		                    </docletArtifacts>
-		                    <!-- the following option is required as a work around for
-		                         version 2.5 of the javadoc plugin which will be used
-		                         by a maven version > 2.0.9 -->
-		                    <useStandardDocletOptions>false</useStandardDocletOptions>
-		                    <additionalparam>-output ${basedir}/src/main/resources/de/btu/openinfra/backend/wadl/resourcedoc.xml</additionalparam>
-		                </configuration>
+<!--                <execution>
+                        <id>generate-extended-wadl</id>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <verbose>false</verbose>
+                            <show>public</show>
+                            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                            <doclet>com.sun.jersey.wadl.resourcedoc.ResourceDoclet</doclet>
+                            <docletPath>${path.separator}${project.build.outputDirectory}</docletPath>
+                            <docletArtifacts>
+                                <docletArtifact>
+                                    <groupId>com.sun.jersey.contribs</groupId>
+                                    <artifactId>wadl-resourcedoc-doclet</artifactId>
+                                    <version>1.19.4</version>
+                                </docletArtifact>
+                                <docletArtifact>
+                                    <groupId>com.sun.jersey</groupId>
+                                    <artifactId>jersey-server</artifactId>
+                                    <version>1.19.4</version>
+                                </docletArtifact>
+                                <docletArtifact>
+                                    <groupId>xerces</groupId>
+                                    <artifactId>xercesImpl</artifactId>
+                                    <version>2.12.0</version>
+                                </docletArtifact>
+                                <docletArtifact>
+                                    <groupId>javax.xml.bind</groupId>
+                                    <artifactId>jaxb-api</artifactId>
+                                    <version>2.3.1</version>
+                                </docletArtifact>
+                                <docletArtifact>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb-core</artifactId>
+                                    <version>2.3.0.1</version>
+                                </docletArtifact>
+                                <docletArtifact>
+                                    <groupId>com.sun.xml.bind</groupId>
+                                    <artifactId>jaxb-impl</artifactId>
+                                    <version>2.3.1</version>
+                                </docletArtifact>
+                            </docletArtifacts>
+                             the following option is required as a work around for
+                            version 2.5 of the javadoc plugin which will be used
+                            by a maven version > 2.0.9 
+                            <useStandardDocletOptions>false</useStandardDocletOptions>
+                            <additionalOptions>
+                                <additionalOption>-output ${basedir}/src/main/resources/de/btu/openinfra/backend/wadl/resourcedoc.xml</additionalOption>
+                            </additionalOptions>
+                        </configuration>
                         <goals>
                             <goal>javadoc</goal>
                         </goals>
                         <phase>compile</phase>
-                    </execution>
-                    <execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
+                    </execution>-->
+<!--                    <execution>
+                        <id>attach-javadocs</id>
+                        <configuration>
+                            <encoding>UTF-8</encoding>
+                            <verbose>false</verbose>
+                            <show>public</show>
+                            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                        </configuration>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>-->
                 </executions>
             </plugin>
             
-            <!-- needed to build jar file when building war file, necessary for
-           		 using backend classes in other maven projects (e.g. plugins)
-           		 http://eureka.ykyuen.info/2009/10/30/maven-dependency-on-jarwar-package/
             <plugin>
-      			<artifactId>maven-war-plugin</artifactId>
-      			<version>2.6</version>
-      			<configuration>
-        			<attachClasses>true</attachClasses>
-        			<classesClassifier>classes</classesClassifier>
-      			</configuration>
-    		</plugin> -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <version>2.7</version>
+                <configuration>
+                    <rulesUri>file:///${session.executionRootDirectory}/maven-version-rules.xml</rulesUri>
+                </configuration>
+            </plugin>
+            
+            
+            <!-- needed to build jar file when building war file, necessary for
+                     using backend classes in other maven projects (e.g. plugins)
+                     http://eureka.ykyuen.info/2009/10/30/maven-dependency-on-jarwar-package/
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                        <attachClasses>true</attachClasses>
+                        <classesClassifier>classes</classesClassifier>
+                </configuration>
+            </plugin> -->
         </plugins>
         <pluginManagement>
-        	<plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        		<plugin>
-        			<groupId>org.eclipse.m2e</groupId>
-        			<artifactId>lifecycle-mapping</artifactId>
-        			<version>1.0.0</version>
-        			<configuration>
-        				<lifecycleMappingMetadata>
-        					<pluginExecutions>
-        						<pluginExecution>
-        							<pluginExecutionFilter>
-        								<groupId>org.apache.maven.plugins</groupId>
-        								<artifactId>maven-javadoc-plugin</artifactId>
-        								<versionRange>
-        									[2.10.3,)
-        								</versionRange>
-        								<goals>
-        									<goal>javadoc</goal>
-        								</goals>
-        							</pluginExecutionFilter>
-        							<action>
-        								<ignore></ignore>
-        							</action>
-        						</pluginExecution>
-        					</pluginExecutions>
-        				</lifecycleMappingMetadata>
-        			</configuration>
-        		</plugin>
-        	</plugins>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-javadoc-plugin</artifactId>
+                                        <versionRange>
+                                            [2.10.3,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>javadoc</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
         </pluginManagement>
     </build>
 
@@ -136,56 +194,83 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${cfjc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${cfjc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${cfjc.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-    	<!-- Guava is used to cache different object types. -->
-    	<dependency>
-    		<groupId>com.google.guava</groupId>
-    		<artifactId>guava</artifactId>
-    		<version>19.0-rc1</version>
-		</dependency>
+        <!-- Guava is used to cache different object types. -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.0-jre</version>
+        </dependency>
 		
-		<!-- Reflections is used to get the classes of a given package. -->
-		<dependency>
-         	<groupId>org.reflections</groupId>
-         	<artifactId>reflections</artifactId>
-         	<version>0.9.9-RC1</version>
-     	</dependency>
+        <!-- Reflections is used to get the classes of a given package. -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
 		
-	    <!-- EclipseLink is used as persistence API and for object relational 
-	         mapping.  -->
-		<dependency>
-		    <groupId>org.eclipse.persistence</groupId>
-		    <artifactId>eclipselink</artifactId>
-		    <version>2.6.0</version>
-		</dependency>
+        <!-- EclipseLink is used as persistence API and for object relational 
+        mapping.  -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+            <version>2.2.1</version>
+        </dependency>
     
-	    <!-- The PostgreSQL JDBC driver (the PostGIS driver is currently not 
-	         required). -->
-	    <dependency>
-		  <groupId>org.postgresql</groupId>
-		  <artifactId>postgresql</artifactId>
-		  <version>9.4-1201-jdbc41</version>
-	    </dependency>
+        <!-- The PostgreSQL JDBC driver (the PostGIS driver is currently not 
+        required). -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.18.jre7</version>
+        </dependency>
 	    
-	    <!-- The Servlet API is used to avoid a corresponding failure message in 
-	         Eclipse. -->
-		<dependency>
-		  <groupId>javax.servlet</groupId>
-		  <artifactId>javax.servlet-api</artifactId>
-		  <version>3.1.0</version>
-		  <scope>provided</scope>
-		</dependency>
+        <!-- The Servlet API is used to avoid a corresponding failure message in 
+        Eclipse. -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
 			    
         <!-- The Jersey implementation including MOXY for JSON support. -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
+            <version>${jersey.version}</version>
             <!-- use the following artifactId if you don't need servlet 2.x 
-                 compatibility -->
+            compatibility -->
             <!-- artifactId>jersey-container-servlet</artifactId -->
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>${jersey.version}</version>
         </dependency>
         
         <!-- MOXY for JSON support !! caution : doesn't provide UUID support -->
@@ -194,72 +279,75 @@
             <artifactId>jersey-media-moxy</artifactId>
         </dependency-->
         <!-- Jackson for JSON support -->
-		<dependency>
-		    <groupId>org.glassfish.jersey.media</groupId>
-		    <artifactId>jersey-media-json-jackson</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
 
-		<!-- JSP as template engine -->
-		<dependency>
-	    <groupId>org.glassfish.jersey.ext</groupId>
-		    <artifactId>jersey-mvc-jsp</artifactId>
-		</dependency>
+        <!-- JSP as template engine -->
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-mvc-jsp</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
 
-		<!-- Media multipart required for file upload -->		
-		<dependency>
-		    <groupId>org.glassfish.jersey.media</groupId>
-		    <artifactId>jersey-media-multipart</artifactId>
-		</dependency>
+        <!-- Media multipart required for file upload -->		
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+	
+        <!-- simple json string to object converter -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
 		
-		<!-- simple json string to object converter -->
-		<dependency>
-		    <groupId>com.googlecode.json-simple</groupId>
-    		<artifactId>json-simple</artifactId>
-		    <version>1.1.1</version>
-		</dependency>
+        <!-- Taglibs for easy JSP scripting -->
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
 		
-		<!-- Taglibs for easy JSP scripting -->
-		<dependency>
-		    <groupId>jstl</groupId>
-		    <artifactId>jstl</artifactId>
-		    <version>1.2</version>
-		</dependency>
+        <!-- This package is used for url rewriting -->
+        <dependency>
+            <groupId>org.tuckey</groupId>
+            <artifactId>urlrewritefilter</artifactId>
+            <version>4.0.4</version>
+        </dependency>
 		
-		<!-- This package is used for url rewriting -->
-		<dependency>
-		    <groupId>org.tuckey</groupId>
-		    <artifactId>urlrewritefilter</artifactId>
-		    <version>4.0.4</version>
-		</dependency>
-		
-		<!-- XSLT -->
-	    <dependency>
-	        <groupId>org.apache.xmlgraphics</groupId>
-	        <artifactId>fop</artifactId>
-	        <version>1.1</version>
-	        <exclusions>
-	            <exclusion>
-	                <groupId>org.apache.avalon.framework</groupId>
-	                <artifactId>avalon-framework-api</artifactId>
-	            </exclusion>
-	            <exclusion>
-	                <groupId>org.apache.avalon.framework</groupId>
-	                <artifactId>avalon-framework-impl</artifactId>
-	            </exclusion>
-	        </exclusions>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.apache.avalon.framework</groupId>
-	        <artifactId>avalon-framework-api</artifactId>
-	        <version>4.3.1</version>
-	    </dependency>
-	    <dependency>
-	        <groupId>org.apache.avalon.framework</groupId>
-	        <artifactId>avalon-framework-impl</artifactId>
-	        <version>4.3.1</version>
-	    </dependency>
+        <!-- XSLT -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>fop</artifactId>
+            <version>2.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.avalon.framework</groupId>
+                    <artifactId>avalon-framework-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.avalon.framework</groupId>
+                    <artifactId>avalon-framework-impl</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avalon.framework</groupId>
+            <artifactId>avalon-framework-api</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.avalon.framework</groupId>
+            <artifactId>avalon-framework-impl</artifactId>
+            <version>4.3.1</version>
+        </dependency>
 
- 		<!-- SLF4J -->
+        <!-- SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -276,80 +364,107 @@
             <version>${slf4j.version}</version>
         </dependency>
         
-		<!-- SolrJ -->
+        <!-- SolrJ -->
         <dependency>
-    		<groupId>org.apache.solr</groupId>
-    		<artifactId>solr-solrj</artifactId>
-    		<version>${solr-solrj.version}</version>
-		</dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>${solr-solrj.version}</version>
+        </dependency>
 		
-		<!-- provides string escape used to prevent XSS -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.4</version>
-		</dependency>
+        <!-- provides string escape used to prevent XSS -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.9</version>
+        </dependency>
 		
-		<!-- Security context -->
-		<dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-core</artifactId>
-		    <version>${shiro.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.shiro</groupId>
-		    <artifactId>shiro-web</artifactId>
-		    <version>${shiro.version}</version>
-		</dependency>
+        <!-- Security context -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
 		
-		<!-- Image processing -->
-		<dependency>
-		    <groupId>org.im4java</groupId>
-		    <artifactId>im4java</artifactId>
-		    <version>1.4.0</version>
-		</dependency>
+        <!-- Image processing -->
+        <dependency>
+            <groupId>org.im4java</groupId>
+            <artifactId>im4java</artifactId>
+            <version>1.4.0</version>
+        </dependency>
 		
-		<!-- Improved mime type detection -->
-		<dependency>
-		    <groupId>org.apache.tika</groupId>
-		    <artifactId>tika-core</artifactId>
-		    <version>1.11</version>
-		</dependency>
+        <!-- Improved mime type detection -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>[1.22,)</version>
+        </dependency>
 		
-		<!-- Read exif data -->
-		<dependency>
-		    <groupId>com.drewnoakes</groupId>
-		    <artifactId>metadata-extractor</artifactId>
-		    <version>2.8.1</version>
-		</dependency>
+        <!-- Read exif data -->
+        <dependency>
+            <groupId>com.drewnoakes</groupId>
+            <artifactId>metadata-extractor</artifactId>
+            <version>2.15.0</version>
+        </dependency>
 		
-		<!-- Tika parser that are required for parsing files -->
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-parsers</artifactId>
-			<version>1.11</version>
-		</dependency>
+        <!-- Tika parser that are required for parsing files -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-parsers</artifactId>
+            <version>[1.22,)</version>
+        </dependency>
 		
-		<!-- necessary for Tika parser -->
-		<dependency>
-      		<groupId>commons-io</groupId>
-			  <artifactId>commons-io</artifactId>
-		      <version>2.4</version>
-   		</dependency>
+        <!-- necessary for Tika parser -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.8.0</version>
+        </dependency>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <!-- Java 6 = JAXB version 2.0   -->
+        <!-- Java 7 = JAXB version 2.2.3 -->
+        <!-- Java 8 = JAXB version 2.2.8 -->
+        <!-- Java 9 = JAXB version 2.3.0 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.3</version>
+        </dependency>
     </dependencies>
     <properties>
-        <jersey.version>2.22.1</jersey.version>
-        <slf4j.version>1.7.12</slf4j.version>
+        <jersey.version>2.32</jersey.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <solr-solrj.version>5.3.1</solr-solrj.version>
-        <shiro.version>1.2.4</shiro.version>
+        <shiro.version>[1.4.2,)</shiro.version>
+        <jxb.version>2.3.1</jxb.version>
+        <cfjc.version>2.10.3</cfjc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
   

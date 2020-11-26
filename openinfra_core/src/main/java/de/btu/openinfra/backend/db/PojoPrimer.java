@@ -327,12 +327,13 @@ public class PojoPrimer {
 
         try {
             // create a new pojo and invoke the set method
-            subPojo = (OpenInfraPojo) subPojoClass.newInstance();
+            subPojo = (OpenInfraPojo) (subPojoClass.getConstructor().newInstance());
             method.invoke(pojo, subPojo);
         } catch (IllegalAccessException |
                 IllegalArgumentException |
                 InvocationTargetException |
-                InstantiationException e) {
+                InstantiationException |
+                NoSuchMethodException e) {
             subPojo = null;
             e.printStackTrace();
         }
@@ -406,11 +407,13 @@ public class PojoPrimer {
             PtLocale locale,
             String pojoClass) {
         try {
-            OpenInfraPojo pojo =
-                    pojoClasses.get(schema).get(pojoClass).newInstance();
+            OpenInfraPojo pojo = pojoClasses.get(schema).get(pojoClass).getConstructor().newInstance();
             makePrimer(pojo, pojo.getClass(), locale);
             return pojo;
-        } catch (InstantiationException | IllegalAccessException |
+        } catch (InstantiationException | 
+                IllegalAccessException |
+                NoSuchMethodException |
+                InvocationTargetException |
                 NullPointerException e) {
             throw new OpenInfraWebException(e);
         }

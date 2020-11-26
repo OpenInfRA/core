@@ -145,12 +145,12 @@ var GXC_ENV = {
     version: '1.1.1',
     layer: 'baalbek:geom_5f4ff0f0-c325-4925-b565-0516e0cd1eda'
   }, {
-    url: 'http://www.tu-cottbus.de/cisar/mapserver/topmaps?map=/home/html/cisar/umn/mapfiles27/ortho_all2.map?',
+    url: 'https://vine.informatik.tu-cottbus.de/cisar/mapserver/topmaps?map=/home/html/cisar/umn/mapfiles27/ortho_all2.map?',
     type: 'WMS',
     version: '1.1.1',
     layer: '2003'
   }, {
-    url: 'http://www.tu-cottbus.de/cisar/mapserver/topmaps?map=/home/html/cisar/umn/mapfiles27/ortho_all2.map?',
+    url: 'https://vine.informatik.tu-cottbus.de/cisar/mapserver/topmaps?map=/home/html/cisar/umn/mapfiles27/ortho_all2.map?',
     type: 'WMS',
     version: '1.1.1',
     layer: '1996',
@@ -163,7 +163,7 @@ var GXC_ENV = {
   }, {
     type: 'WMS',
     title: 'CISAR UMN MapServer',
-    url: 'http://www.tu-cottbus.de/cisar/mapserver/topmaps?map=/home/html/cisar/umn/mapfiles27/ortho_all2.map'
+    url: 'https://vine.informatik.tu-cottbus.de/cisar/mapserver/topmaps?map=/home/html/cisar/umn/mapfiles27/ortho_all2.map'
   }, {
     type: 'WMS',
     title: 'localhost (dev)',

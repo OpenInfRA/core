@@ -351,8 +351,7 @@ public class FileResource {
 
 		// Generate signature/hash
 		try {
-			signature = com.google.common.io.Files.hash(
-					new File(fileName), Hashing.sha256()).toString();
+			signature = com.google.common.io.Files.asByteSource(new File(fileName)).hash(Hashing.sha256()).toString();
 		} catch (IOException ex) {
 			throw new OpenInfraWebException(ex);
 		}

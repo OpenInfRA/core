@@ -57,7 +57,7 @@ public class PrimerResource {
      * @param schema    The schema name the request should be processed at.
      * @param pojoClass The name of the class a Pojo should be created for.
      * @param language  A java locale as string.
-     * @return
+     * @return An OpenInfrPojo instance.
      */
     @GET
     public OpenInfraPojo primePojo(

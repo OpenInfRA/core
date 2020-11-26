@@ -30,6 +30,8 @@ import de.btu.openinfra.backend.db.daos.project.AttributeValueGeomType;
 import de.btu.openinfra.backend.db.pojos.project.TopicPojo;
 import de.btu.openinfra.backend.rest.OpenInfraResponseBuilder;
 import de.btu.openinfra.backend.rest.project.TopicInstanceResource;
+import java.io.File;
+import org.apache.fop.apps.FopFactoryBuilder;
 
 /**
  * This class transforms XML files into PDF files.
@@ -93,7 +95,7 @@ public class TopicPdfResource {
 		// Use formatted objects (FOP) and a specific XSL file in order to
 		// generate PDF output.
 		Fop fop;
-		FopFactory fopf = FopFactory.newInstance();
+		FopFactory fopf = FopFactory.newInstance(new File(".").toURI());
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		Transformer xslfoTransformer;
 

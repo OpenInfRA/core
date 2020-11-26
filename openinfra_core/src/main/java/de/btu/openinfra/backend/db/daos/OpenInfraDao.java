@@ -468,7 +468,7 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
 
 		if(tm == null) {
 			try {
-				tm = modelClass.newInstance();
+				tm = modelClass.getConstructor().newInstance();
 				tm.setId(uuid);
 			} catch(Exception ex) {
 				ex.printStackTrace();
@@ -504,7 +504,6 @@ public abstract class OpenInfraDao<TypePojo extends OpenInfraPojo,
 		if(em != null) {
 			em.close();
 		} // end if
-		super.finalize();
 	}
 
 	/**

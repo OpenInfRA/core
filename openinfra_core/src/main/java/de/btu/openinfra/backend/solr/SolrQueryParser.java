@@ -217,7 +217,7 @@ public class SolrQueryParser {
                     // Only sensible for numeric and date values. The date check
                     // will removes the last character that was added by
                     // converting the date to a Solr date format.
-                    if (NumberUtils.isNumber(part.getAttributeValue()) ||
+                    if (NumberUtils.isCreatable(part.getAttributeValue()) ||
                             isDate) {
                         query += String.format(
                                 part.getRelationalOperator().getString(),

@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import de.btu.openinfra.backend.db.MappingResult;
 import de.btu.openinfra.backend.db.OpenInfraSchemas;
 import de.btu.openinfra.backend.db.jpa.model.LocalizedCharacterString;
@@ -16,6 +14,7 @@ import de.btu.openinfra.backend.db.jpa.model.PtLocale;
 import de.btu.openinfra.backend.db.pojos.LocalizedString;
 import de.btu.openinfra.backend.db.pojos.PtFreeTextPojo;
 import de.btu.openinfra.backend.exception.OpenInfraWebException;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * This class represents the PtFreeText and is used to access the underlying
@@ -72,7 +71,7 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
 			Locale locale,
 			PtFreeText ptf) {
 		// 1. Create a list of LocalizedStrings
-		List<LocalizedString> lsList = new LinkedList<LocalizedString>();
+		List<LocalizedString> lsList = new LinkedList<>();
 
 		// 2. Extract the information from the given PtFreeText object
 		if(ptf != null) {
@@ -91,7 +90,7 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
 								.getCountryCode();
 					} // end if
 					if(lc.equals(NON_LINGUISTIC_CONTENT) ||
-							(cc.equals(locale.getCountry()) &&
+							(cc != null && cc.equals(locale.getCountry()) &&
 									lc.equals(locale.getLanguage()))) {
 						lsList.add(mapLocalizedString(lcs));
 						break;
@@ -135,7 +134,10 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
 	 * one description (in many languages) ->
 	 * has PtFreeText (a group of languages) ->
 	 * has LocalizedCharacterString (free text + language)
-	 *
+	 * 
+         * @param pojo Pojo object.
+         * @param ptf  Free text object.
+         * @return mapping result
 	 */
 	@Override
 	public MappingResult<PtFreeText> mapToModel(
@@ -149,7 +151,7 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
     		List<LocalizedCharacterString> lcsList =
     				ptf.getLocalizedCharacterStrings();
     		if(lcsList == null) {
-    			lcsList = new LinkedList<LocalizedCharacterString>();
+    			lcsList = new LinkedList<>();
     		} // end if
 
     		// 3. Now iterate through all LocalizedStrings and look if this
@@ -172,10 +174,14 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
     					if("".equals(ls.getCharacterString())) {
     						it.remove();
     					} else {
-    					    // write string and escape it to prevent XSS
-//    						lcs.setFreeText(escapeString(
-//    								ls.getCharacterString()));
-    					    lcs.setFreeText(ls.getCharacterString());
+    						/*
+    					     	* Write string - don't escape on input, 
+ 					     	* xss prevention must be done at string usage
+						*/
+                                                // write string and escape it to prevent XSS
+                                                // lcs.setFreeText(escapeString(
+                                                //ls.getCharacterString()));
+                                                lcs.setFreeText(ls.getCharacterString());
     					} // end if else
     					break;
     				} // end if
@@ -189,6 +195,11 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
     				lcs.setPtLocale(em.find(
     						PtLocale.class,
     						ls.getLocale().getUuid()));
+
+    				/*
+				 * Write string - don't escape on input, 
+				 * xss prevention must be done at string usage
+				 */
 //    				lcs.setFreeText(escapeString(ls.getCharacterString()));
     				lcs.setFreeText(ls.getCharacterString());
     				lcs.setPtFreeText(ptf);
@@ -201,7 +212,7 @@ public class PtFreeTextDao extends OpenInfraDao<PtFreeTextPojo, PtFreeText> {
     		ptf.setLocalizedCharacterStrings(lcsList);
 
     		// return the model as mapping result
-    		return new MappingResult<PtFreeText>(ptf.getId(), ptf);
+    		return new MappingResult<>(ptf.getId(), ptf);
 
         } catch (NullPointerException npe) {
             throw new OpenInfraWebException(npe);
